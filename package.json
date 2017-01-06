@@ -11,6 +11,8 @@
   "dependencies": {
     "plotly.js": "../plotly.js"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jasmine-reporters": "^2.2.0"
+  },
   "description": ""
 }
