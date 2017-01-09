@@ -1,8 +1,7 @@
 module.exports = {
   'layout': {
     'width': 1184,
-    'height': 400,
-    'paper_bgcolor': 'rgb(250, 240, 220)'
+    'height': 400
   },
   'data': [{
 

@@ -26,13 +26,14 @@ describe('Parcoords', function() {
     delete mockCopy2.data[0].dimensions[0].constraintrange;
     mockCopy.data[0].dimensions[2].constraintrange = [0, 1];
     mockCopy2.data[0].dimensions[2].constraintrange = [0, 2];
+    mockCopy2.layout.width = 300;
 
     Plotly.plot(gd, mockCopy).then(function() {
 
       expect(1).toEqual(1);
       expect(gd.data.length).toEqual(1);
 
-      Plotly.plot(gd, mockCopy2).then(function() {
+     Plotly.plot(gd, mockCopy2).then(function() {
 
         expect(1).toEqual(1);
         expect(gd.data.length).toEqual(1);
