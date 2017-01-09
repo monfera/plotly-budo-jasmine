@@ -42,4 +42,35 @@ describe('Parcoords', function() {
       });
     });
   });
+
+  fit('renders fine', function(done) {
+
+    var mockCopy = Lib.extendDeep({}, mock);
+    var mockCopy2 = Lib.extendDeep({}, mock);
+    var gd = document.body;
+
+    delete mockCopy.data[0].dimensions[0].constraintrange;
+    delete mockCopy2.data[0].dimensions[0].constraintrange;
+    mockCopy.data[0].dimensions[2].constraintrange = [0, 1];
+    mockCopy2.data[0].dimensions[2].constraintrange = [0, 2];
+    mockCopy2.layout.width = 1600;
+    mockCopy2.layout.height = 200;
+
+    Plotly.plot(gd, mockCopy).then(function() {
+
+      expect(1).toEqual(1);
+      expect(gd.data.length).toEqual(1);
+
+      Plotly.deleteTraces(gd, 0).then(function() {
+        Plotly.plot(gd, mockCopy2).then(function() {
+
+          expect(1).toEqual(1);
+          expect(gd.data.length).toEqual(1);
+
+          done();
+        });
+      });
+    });
+  });
+
 });
