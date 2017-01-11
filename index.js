@@ -1,4 +1,4 @@
-// budo --live --open --host localhost my-first-test.js // cheers Ricky Reusser
+// budo --live --open --host localhost index.js // cheers Ricky Reusser
 
 
 // Jasmine broilerplate - can be put in a separate file
@@ -134,6 +134,52 @@ describe('Parcoords', function() {
 
       });
 
+      it('Plotly.restyle should update the existing parcoords row', function(done) {
+
+        var mockCopy = Lib.extendDeep({}, mock);
+        var mockCopy2 = Lib.extendDeep({}, mock);
+
+        delete mockCopy.data[0].dimensions[0].constraintrange;
+        delete mockCopy2.data[0].dimensions[0].constraintrange;
+
+        // in this example, the brush range doesn't change...
+        mockCopy.data[0].dimensions[2].constraintrange = [0, 2];
+        mockCopy2.data[0].dimensions[2].constraintrange = [0, 2];
+
+        // .. but what's inside the brush does:
+        function numberUpdater (v) {
+          switch(v) {
+            case 0.5: return 2.5;
+            default: return v;
+          }
+        }
+
+        // shuffle around categorical values
+        mockCopy2.data[0].dimensions[2].ticktext = ['A', 'B', 'Y', 'AB', 'Z'];
+        mockCopy2.data[0].dimensions[2].tickvals = [0, 1, 2, 2.5, 3];
+        mockCopy2.data[0].dimensions[2].values = mockCopy2.data[0].dimensions[2].values.map(numberUpdater);
+
+        // wrap the `dimensions` array
+        mockCopy2.data[0].dimensions = [mockCopy2.data[0].dimensions];
+
+        expect(document.querySelectorAll('.parcoordsModel').length).toEqual(0);
+
+        Plotly.plot(gd, mockCopy).then(function() {
+
+          expect(document.querySelectorAll('.parcoordsModel').length).toEqual(1);
+          expect(gd.data.length).toEqual(1);
+
+          //Plotly.restyle(gd, {lines: mockCopy2.data[0].lines}).then(function() {
+          Plotly.restyle(gd, mockCopy2.data[0]).then(function() {
+
+            //expect(document.querySelectorAll('.parcoordsModel').length).toEqual(2);
+            //expect(gd.data.length).toEqual(2);
+
+            done();
+          });
+        });
+
+      });
     })
 
   });
