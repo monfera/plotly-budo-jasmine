@@ -14,6 +14,7 @@ var d3 = require('../plotly.js/node_modules/d3');
 var createGraphDiv = require('plotly.js/test/jasmine/assets/create_graph_div');
 var destroyGraphDiv = require('plotly.js/test/jasmine/assets/destroy_graph_div');
 
+
 var mock0 = { // mock with zero dimensions; special case, as no dimension can be rendered
   'layout': {
     'width': 2184,
@@ -26,14 +27,9 @@ var mock0 = { // mock with zero dimensions; special case, as no dimension can be
       'y': [0, 1]
     },
 
-    'padding': 80,
-    'blocklinecount': 5000,
     'type': 'parcoords',
     'line': {
-      'focusopacity': 1,
       'contextopacity': 0.0625,
-      'pixelratio': 1,
-      'focusalphablending': true,
 
       'showscale': true,
       'reversescale': true,
@@ -59,14 +55,9 @@ var mock1 = { // mock with one dimension (zero panel); special case, as no panel
       'y': [0, 1]
     },
 
-    'padding': 80,
-    'blocklinecount': 5000,
     'type': 'parcoords',
     'line': {
-      'focusopacity': 1,
       'contextopacity': 0.0625,
-      'pixelratio': 1,
-      'focusalphablending': true,
 
       'showscale': true,
       'reversescale': true,
@@ -99,14 +90,9 @@ var mock2 = { // mock with two dimensions (one panel); special case, e.g. left a
       'y': [0, 1]
     },
 
-    'padding': 80,
-    'blocklinecount': 5000,
     'type': 'parcoords',
     'line': {
-      'focusopacity': 1,
       'contextopacity': 0.0625,
-      'pixelratio': 1,
-      'focusalphablending': true,
 
       'showscale': true,
       'reversescale': true,
@@ -145,14 +131,9 @@ var mock = {
       'y': [0, 1]
     },
 
-    'padding': 80,
-    'blocklinecount': 5000,
     'type': 'parcoords',
     'line': {
-      'focusopacity': 1,
       'contextopacity': 0.0625,
-      'pixelratio': 1,
-      'focusalphablending': true,
 
       'showscale': true,
       'reversescale': true,
@@ -229,7 +210,7 @@ var mock = {
   }]
 };
 
-fdescribe('parcoords', function() {
+describe('parcoords', function() {
 
   afterEach(destroyGraphDiv);
 
@@ -266,7 +247,6 @@ fdescribe('parcoords', function() {
         expect(gd.data[0].dimensions.length).toEqual(1);
         expect(document.querySelectorAll('.axis').length).toEqual(1); // sole axis still shows up
         expect(gd.data[0].line.cmin).toEqual(-4000);
-        expect(gd.data[0].blocklinecount).toEqual(5000);
         expect(gd.data[0].dimensions[0].visible).not.toBeDefined();
         expect(gd.data[0].dimensions[0].range).not.toBeDefined();
         expect(gd.data[0].dimensions[0].constraintrange).toBeDefined();
@@ -398,7 +378,7 @@ fdescribe('parcoords', function() {
       });
     });
 
-    it('Works with 63 dimensions; also, use default color', function(done) {
+    it('Works with 60 dimensions; also, use default color', function(done) {
 
       var mockCopy = Lib.extendDeep({}, mock1);
       var newDimension, i, j;
@@ -406,7 +386,7 @@ fdescribe('parcoords', function() {
       mockCopy.layout.width = 1680;
       mockCopy.data[0].dimensions = [];
       delete mockCopy.data[0].line;
-      for(i = 0; i < 63; i++) {
+      for(i = 0; i < 60; i++) {
         newDimension = Lib.extendDeep({}, mock1.data[0].dimensions[0]);
         newDimension.id = 'S' + i;
         newDimension.label = 'S' + i;
@@ -423,13 +403,13 @@ fdescribe('parcoords', function() {
       Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(function() {
 
         expect(gd.data.length).toEqual(1);
-        expect(gd.data[0].dimensions.length).toEqual(63);
-        expect(document.querySelectorAll('.axis').length).toEqual(63);
+        expect(gd.data[0].dimensions.length).toEqual(60);
+        expect(document.querySelectorAll('.axis').length).toEqual(60);
         done();
       });
     });
 
-    it('Truncates 63+ dimensions to 63', function(done) {
+    it('Truncates 60+ dimensions to 60', function(done) {
 
       var mockCopy = Lib.extendDeep({}, mock1);
       var newDimension, i, j;
@@ -451,8 +431,8 @@ fdescribe('parcoords', function() {
       Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(function() {
 
         expect(gd.data.length).toEqual(1);
-        expect(gd.data[0].dimensions.length).toEqual(63);
-        expect(document.querySelectorAll('.axis').length).toEqual(63);
+        expect(gd.data[0].dimensions.length).toEqual(60);
+        expect(document.querySelectorAll('.axis').length).toEqual(60);
         done();
       });
     });
@@ -463,7 +443,7 @@ fdescribe('parcoords', function() {
       var newDimension, i, j;
 
       mockCopy.layout.width = 1680;
-      for(i = 0; i < 63; i++) {
+      for(i = 0; i < 60; i++) {
         newDimension = Lib.extendDeep({}, mock1.data[0].dimensions[0]);
         newDimension.id = 'S' + i;
         newDimension.label = 'S' + i;
@@ -480,8 +460,8 @@ fdescribe('parcoords', function() {
       Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(function() {
 
         expect(gd.data.length).toEqual(1);
-        expect(gd.data[0].dimensions.length).toEqual(63);
-        expect(document.querySelectorAll('.axis').length).toEqual(63);
+        expect(gd.data[0].dimensions.length).toEqual(60);
+        expect(document.querySelectorAll('.axis').length).toEqual(60);
         done();
       });
     });
@@ -539,7 +519,6 @@ fdescribe('parcoords', function() {
       expect(gd.data[0].dimensions.length).toEqual(11);
       expect(document.querySelectorAll('.axis').length).toEqual(10); // one dimension is `visible: false`
       expect(gd.data[0].line.cmin).toEqual(-4000);
-      expect(gd.data[0].blocklinecount).toEqual(5000);
       expect(gd.data[0].dimensions[0].visible).not.toBeDefined();
       expect(gd.data[0].dimensions[4].visible).toEqual(true);
       expect(gd.data[0].dimensions[5].visible).toEqual(false);
