@@ -550,6 +550,7 @@ describe('parcoords', function() {
 
       function shuffle(aOrig) {
         var a = aOrig.slice();
+        return a;
         var result = [];
         while(a.length) {
           result.push(a.splice(Math.floor(Math.random() * a.length), 1)[0]);
