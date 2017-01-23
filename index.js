@@ -226,6 +226,87 @@ describe('parcoords', function() {
 
   //afterEach(destroyGraphDiv);
 
+  fit('SPLOM', function(done) {
+
+/*
+    destroyGraphDiv();
+    gd = createGraphDiv();
+*/
+    mockCopy = Lib.extendDeep({}, mock);
+    var gd = createGraphDiv();
+
+    delete mockCopy.data[0].dimensions[0].constraintrange;
+
+    function shuffle(aOrig) {
+      var a = aOrig.slice();
+      return a;
+      var result = [];
+      while(a.length) {
+        result.push(a.splice(Math.floor(Math.random() * a.length), 1)[0]);
+      }
+      return result;
+    }
+
+    function getShuffled(r) {
+
+      var shuffledMock = Lib.extendDeep({}, mockCopy);
+      shuffledMock.data[0].dimensions = shuffle(shuffledMock.data[0].dimensions.slice());
+      //shuffledMock.data[0].dimensions.forEach(function(d) {d.id = 'R_' + r + '_' + d.id;});
+      //shuffledMock.data[0].dimensions.forEach(function(d) {d.label = 'R_' + r + '_' + d.label;});
+
+      return shuffledMock;
+    }
+
+    mockCopy.data.push(getShuffled(0).data[0])
+    mockCopy.data.push(getShuffled(0).data[0])
+    mockCopy.data.push(getShuffled(0).data[0])
+    mockCopy.data.push(getShuffled(0).data[0])
+    mockCopy.data.push(getShuffled(0).data[0])
+    mockCopy.data.push(getShuffled(0).data[0])
+    mockCopy.data.push(getShuffled(0).data[0])
+    mockCopy.data.push(getShuffled(0).data[0])
+    mockCopy.data.push(getShuffled(0).data[0])
+
+    Plotly.plot(gd, mockCopy.data, mockCopy.layout)
+      .then(function() {
+
+        // not clutter output with the axis extent values
+        d3.selectAll('.axisExtent').style('display', 'none');
+
+        // show only the top dimension names
+        d3.selectAll('.parcoords')
+          .filter(function(d) {return d.key > 0;})
+          .selectAll('.axisHeading')
+          .style('display', 'none');
+
+        // move plot downwards so the top dimension names are visible despite dense row packing
+        d3.select('.main-svg').style('overflow', 'visible');
+        d3.select('#graph').style('top', '20px');
+        d3.selectAll('svg text').style('font-size', '8px');
+
+        d3.selectAll('.axisTitle').attr('transform', 'translate(0,-12)');
+
+        expect(gd.data.length).toEqual(2);
+
+        expect(gd.data[0].dimensions.length).toEqual(11);
+        expect(gd.data[0].line.cmin).toEqual(-4000);
+        expect(gd.data[0].dimensions[0].constraintrange).toBeDefined();
+        expect(gd.data[0].dimensions[0].constraintrange).toEqual([100000, 150000]);
+        expect(gd.data[0].dimensions[1].constraintrange).not.toBeDefined();
+
+        expect(gd.data[1].dimensions.length).toEqual(11);
+        expect(gd.data[1].line.cmin).toEqual(-4000);
+        expect(gd.data[1].dimensions[10].constraintrange).toBeDefined();
+        expect(gd.data[1].dimensions[10].constraintrange).toEqual([100000, 150000]);
+        expect(gd.data[1].dimensions[1].constraintrange).not.toBeDefined();
+
+        expect(document.querySelectorAll('.axis').length).toEqual(20);  // one dimension is `visible: false`
+
+        done();
+      });
+
+  });
+
   describe('edge cases', function() {
 
     it('Works fine with one panel only', function(done) {
@@ -540,81 +621,6 @@ describe('parcoords', function() {
       expect(gd.data[0].dimensions[1].range).toBeDefined();
       expect(gd.data[0].dimensions[1].range).toEqual([0, 700000]);
       expect(gd.data[0].dimensions[1].constraintrange).not.toBeDefined();
-
-    });
-
-
-    fit('SPLOM', function(done) {
-
-      delete mockCopy.data[0].dimensions[0].constraintrange;
-
-      function shuffle(aOrig) {
-        var a = aOrig.slice();
-        return a;
-        var result = [];
-        while(a.length) {
-          result.push(a.splice(Math.floor(Math.random() * a.length), 1)[0]);
-        }
-        return result;
-      }
-
-      function getShuffled(r) {
-
-        var shuffledMock = Lib.extendDeep({}, mockCopy);
-        shuffledMock.data[0].dimensions = shuffle(shuffledMock.data[0].dimensions.slice());
-        //shuffledMock.data[0].dimensions.forEach(function(d) {d.id = 'R_' + r + '_' + d.id;});
-        //shuffledMock.data[0].dimensions.forEach(function(d) {d.label = 'R_' + r + '_' + d.label;});
-
-        return shuffledMock;
-      }
-
-
-                          Plotly.addTraces(gd, [getShuffled(0).data[0]])
-        .then(function() {Plotly.addTraces(gd, [getShuffled(0).data[0]]);})
-        .then(function() {Plotly.addTraces(gd, [getShuffled(0).data[0]]);})
-        .then(function() {Plotly.addTraces(gd, [getShuffled(0).data[0]]);})
-        .then(function() {Plotly.addTraces(gd, [getShuffled(0).data[0]]);})
-        .then(function() {Plotly.addTraces(gd, [getShuffled(0).data[0]]);})
-        .then(function() {Plotly.addTraces(gd, [getShuffled(0).data[0]]);})
-        .then(function() {Plotly.addTraces(gd, [getShuffled(0).data[0]]);})
-        .then(function() {Plotly.addTraces(gd, [getShuffled(0).data[0]]);})
-
-        .then(function() {
-
-        // not clutter output with the axis extent values
-        d3.selectAll('.axisExtent').style('display', 'none');
-
-        // show only the top dimension names
-        d3.selectAll('.parcoords')
-          .filter(function(d) {return d.key > 0;})
-          .selectAll('.axisHeading')
-          .style('display', 'none');
-
-        // move plot downwards so the top dimension names are visible despite dense row packing
-        d3.select('.main-svg').style('overflow', 'visible');
-        d3.select('#graph').style('top', '20px');
-        d3.selectAll('svg text').style('font-size', '8px');
-
-        d3.selectAll('.axisTitle').attr('transform', 'translate(0,-12)');
-
-        expect(gd.data.length).toEqual(2);
-
-        expect(gd.data[0].dimensions.length).toEqual(11);
-        expect(gd.data[0].line.cmin).toEqual(-4000);
-        expect(gd.data[0].dimensions[0].constraintrange).toBeDefined();
-        expect(gd.data[0].dimensions[0].constraintrange).toEqual([100000, 150000]);
-        expect(gd.data[0].dimensions[1].constraintrange).not.toBeDefined();
-
-        expect(gd.data[1].dimensions.length).toEqual(11);
-        expect(gd.data[1].line.cmin).toEqual(-4000);
-        expect(gd.data[1].dimensions[10].constraintrange).toBeDefined();
-        expect(gd.data[1].dimensions[10].constraintrange).toEqual([100000, 150000]);
-        expect(gd.data[1].dimensions[1].constraintrange).not.toBeDefined();
-
-        expect(document.querySelectorAll('.axis').length).toEqual(20);  // one dimension is `visible: false`
-
-        done();
-      });
 
     });
 
