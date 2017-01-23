@@ -118,8 +118,8 @@ var mock2 = { // mock with two dimensions (one panel); special case, e.g. left a
 
 var mock = {
   'layout': {
-    'width': 1184,
-    'height': 400
+    'width': 1600,
+    'height': 540
   },
   'data': [{
 
@@ -127,7 +127,7 @@ var mock = {
       'x': [0, 1],
       'y': [0, 1]
     },
-
+    'pad': {t: 50, r: 60, b: 30, l: 40},
     'type': 'parcoords',
     'line': {
       'showscale': true,
@@ -213,7 +213,7 @@ describe('parcoords', function() {
     });
   });
 
-  afterEach(destroyGraphDiv);
+  //afterEach(destroyGraphDiv);
 
   describe('edge cases', function() {
 
@@ -529,6 +529,37 @@ describe('parcoords', function() {
       expect(gd.data[0].dimensions[1].range).toBeDefined();
       expect(gd.data[0].dimensions[1].range).toEqual([0, 700000]);
       expect(gd.data[0].dimensions[1].constraintrange).not.toBeDefined();
+
+    });
+
+    fit('Calling `Plotly.plot` again should add the new parcoords', function(done) {
+
+      delete mockCopy.data[0].dimensions[0].constraintrange;
+      var reversedMockCopy = Lib.extendDeep({}, mockCopy);
+      reversedMockCopy.data[0].dimensions = reversedMockCopy.data[0].dimensions.slice().reverse();
+      reversedMockCopy.data[0].dimensions.forEach(function(d) {d.id = 'R_' + d.id;});
+      reversedMockCopy.data[0].dimensions.forEach(function(d) {d.label = 'R_' + d.label;});
+
+      Plotly.plot(gd, reversedMockCopy.data, reversedMockCopy.layout).then(function() {
+
+        expect(gd.data.length).toEqual(2);
+
+        expect(gd.data[0].dimensions.length).toEqual(11);
+        expect(gd.data[0].line.cmin).toEqual(-4000);
+        expect(gd.data[0].dimensions[0].constraintrange).toBeDefined();
+        expect(gd.data[0].dimensions[0].constraintrange).toEqual([100000, 150000]);
+        expect(gd.data[0].dimensions[1].constraintrange).not.toBeDefined();
+
+        expect(gd.data[1].dimensions.length).toEqual(11);
+        expect(gd.data[1].line.cmin).toEqual(-4000);
+        expect(gd.data[1].dimensions[10].constraintrange).toBeDefined();
+        expect(gd.data[1].dimensions[10].constraintrange).toEqual([100000, 150000]);
+        expect(gd.data[1].dimensions[1].constraintrange).not.toBeDefined();
+
+        expect(document.querySelectorAll('.axis').length).toEqual(20);  // one dimension is `visible: false`
+
+        done();
+      });
 
     });
 
