@@ -66,17 +66,21 @@ fdescribe('scattermapbox defaults', function() {
     var fullTrace = _supply({
       dimensions: [{values: []}]
     });
-    expect(fullTrace.dimensions).toEqual([{values: [], visible: true, _index: 0}]);
+    expect(fullTrace.dimensions).toEqual([{values: [], visible: false, _index: 0}]);
   });
 
   it('dimension `values` gets truncated to a common shortest length', function() {
     var fullTrace = _supply({dimensions: [
       {'values': [321, 534, 542, 674]},
-      {'values': [562, 124, 942]}
+      {'values': [562, 124, 942]},
+      {'values': [], visible: true}, // should be overwritten to false
+      {'values': [1, 2], visible: false} // shouldn't be truncated to as false
     ]});
     expect(fullTrace.dimensions).toEqual([
       {values: [321, 534, 542], visible: true, _index: 0},
-      {values: [562, 124, 942], visible: true, _index: 1}
+      {values: [562, 124, 942], visible: true, _index: 1},
+      {values: [], visible: false, _index: 2},
+      {values: [1, 2], visible: false, _index: 3}
       ]);
   });
 
@@ -188,7 +192,7 @@ var mock2 = { // mock with two dimensions (one panel); special case, e.g. left a
 var mock = {
   'layout': {
     'width': 1184,
-    'height': 400
+    'height': 800
   },
   'data': [{
 
