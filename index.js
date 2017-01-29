@@ -16,8 +16,10 @@ var d3 = require('../plotly.js/node_modules/d3');
 var createGraphDiv = require('plotly.js/test/jasmine/assets/create_graph_div');
 var destroyGraphDiv = require('plotly.js/test/jasmine/assets/destroy_graph_div');
 
+var attributes = require('plotly.js/src/traces/parcoords/attributes');
 
-describe('parcoords defaults', function() {
+
+fdescribe('parcoords defaults', function() {
   'use strict';
 
   function _supply(traceIn) {
@@ -30,51 +32,73 @@ describe('parcoords defaults', function() {
     return traceOut;
   }
 
-  it('pad defaults should apply if missing', function() {
+  it('\'pad\' defaults should apply if missing', function() {
     var fullTrace = _supply({});
     expect(fullTrace.pad).toEqual({t: 80, r: 80, b: 80, l: 80});
   });
 
-  it('pad properties should be default where not specified', function() {
+  it('\'pad\' properties should be default where not specified', function() {
     var fullTrace = _supply({ pad: {t: 10, r: 20, b: 30} });
     expect(fullTrace.pad).toEqual({t: 10, r: 20, b: 30, l: 80});
   });
 
-  it('line specification should yield a default color', function() {
+  xit('\'line\' specification should yield a default color', function() {
     var fullTrace = _supply({});
     expect(fullTrace.line).toEqual({color: '#444'});
   });
 
-  it('domain specification should have a default', function() {
+  it('\'colorscale\' should assume a default value if the \'color\' array is specified', function() {
+    var fullTrace = _supply({
+      line: {
+        color: [35, 63, 21, 42]
+      },
+      dimensions: [
+        {values: [321, 534, 542, 674]},
+        {values: [562, 124, 942, 189]},
+        {values: [287, 183, 385, 884]},
+        {values: [113, 489, 731, 454]}
+      ]
+    });
+    expect(fullTrace.line).toEqual({
+      color: [35, 63, 21, 42],
+      colorscale: attributes.line.colorscale.dflt,
+      cauto: true,
+      autocolorscale: false,
+      reversescale: false,
+      showscale: false
+    });
+  });
+
+  it('\'domain\' specification should have a default', function() {
     var fullTrace = _supply({});
     expect(fullTrace.domain).toEqual({x: [0, 1], y: [0, 1]});
   });
 
-  it('dimension specification should have a default of an empty array', function() {
+  it('\'dimension\' specification should have a default of an empty array', function() {
     var fullTrace = _supply({});
     expect(fullTrace.dimensions).toEqual([]);
   });
 
-  it('dimension should be ignored if `values` are unsupported', function() {
+  it('\'dimension\' should be ignored if `values` are unsupported', function() {
     var fullTrace = _supply({
       dimensions: [{label: 'test dimension'}]
     });
     expect(fullTrace.dimensions).toEqual([]);
   });
 
-  it('dimension should be used with default values where attributes are not provided', function() {
+  it('\'dimension\' should be used with default values where attributes are not provided', function() {
     var fullTrace = _supply({
       dimensions: [{values: []}]
     });
     expect(fullTrace.dimensions).toEqual([{values: [], visible: false, _index: 0}]);
   });
 
-  it('dimension `values` should get truncated to a common shortest length', function() {
+  it('\'dimension.values\' should get truncated to a common shortest length', function() {
     var fullTrace = _supply({dimensions: [
-      {'values': [321, 534, 542, 674]},
-      {'values': [562, 124, 942]},
-      {'values': [], visible: true}, // should be overwritten to false
-      {'values': [1, 2], visible: false} // shouldn't be truncated to as false
+      {values: [321, 534, 542, 674]},
+      {values: [562, 124, 942]},
+      {values: [], visible: true}, // should be overwritten to false
+      {values: [1, 2], visible: false} // shouldn't be truncated to as false
     ]});
     expect(fullTrace.dimensions).toEqual([
       {values: [321, 534, 542], visible: true, _index: 0},
@@ -605,7 +629,7 @@ if(1)
 
     });
 
-    fit('Calling `Plotly.plot` again should add the new parcoords', function(done) {
+    it('Calling `Plotly.plot` again should add the new parcoords', function(done) {
 
       var reversedMockCopy = Lib.extendDeep({}, mockCopy);
       reversedMockCopy.data[0].dimensions = reversedMockCopy.data[0].dimensions.slice().reverse();
