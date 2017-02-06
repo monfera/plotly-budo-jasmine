@@ -123,7 +123,9 @@ var mock2 = { // mock with two dimensions (one panel); special case, e.g. left a
 var mock = {
   'layout': {
     'width': 1184,
-    'height': 400
+    'height': 400,
+    'title': 'Widget parameters and cost',
+    'margin': {t: 80, r: 80, b: 80, l: 80}
   },
   'data': [{
 
@@ -224,16 +226,6 @@ describe('parcoords initialization tests', function() {
 
       return traceOut;
     }
-
-    it('\'pad\' defaults should apply if missing', function() {
-      var fullTrace = _supply({});
-      expect(fullTrace.pad).toEqual({t: 80, r: 80, b: 80, l: 80});
-    });
-
-    it('\'pad\' properties should be default where not specified', function() {
-      var fullTrace = _supply({ pad: {t: 10, r: 20, b: 30} });
-      expect(fullTrace.pad).toEqual({t: 10, r: 20, b: 30, l: 80});
-    });
 
     it('\'line\' specification should yield a default color', function() {
       var fullTrace = _supply({});
