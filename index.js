@@ -234,7 +234,7 @@ describe('parcoords', function() {
 
   beforeAll(function() {
     mock.data[0].dimensions.forEach(function(d) {
-      d.values = d.values.slice(0, 100);
+      d.values = d.values.slice(30, 40);
     });
   });
 
@@ -503,6 +503,10 @@ describe('parcoords', function() {
 
     beforeEach(function(done) {
       mockCopy = Lib.extendDeep({}, mock);
+      mockCopy.data[0].domain = {
+        x: [0.1, 0.9],
+        y: [0.05, 0.85]
+      };
       gd = createGraphDiv();
       Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(done);
     });
@@ -670,15 +674,15 @@ describe('parcoords', function() {
 
       expect(tester.get()).toBe(false);
 
-      mouseEvent('mousemove', 111, 207);
-      mouseEvent('mouseover', 111, 207);
+      mouseEvent('mousemove', 853, 254);
+      mouseEvent('mouseover', 853, 254);
 
       window.setTimeout(function() {
 
-        expect(tester.get().hover.curveNumber).toBe(36);
+        expect(tester.get().hover.curveNumber).toBe(4);
 
-        mouseEvent('mousemove', 110, 126);
-        mouseEvent('mouseover', 110, 126);
+        mouseEvent('mousemove', 800, 240);
+        mouseEvent('mouseover', 800, 240);
 
         window.setTimeout(function() {
 
