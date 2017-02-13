@@ -31,6 +31,9 @@ mock0.data[0].dimensions = [];
 
 var mock = require('plotly.js/test/image/mocks/gl2d_parcoords_large.json');
 
+var lineStart = 30;
+var lineCount = 10;
+
 describe('parcoords initialization tests', function() {
 
   'use strict';
@@ -234,8 +237,9 @@ describe('parcoords', function() {
 
   beforeAll(function() {
     mock.data[0].dimensions.forEach(function(d) {
-      d.values = d.values.slice(30, 40);
+      d.values = d.values.slice(lineStart, lineStart + lineCount);
     });
+    mock.data[0].line.color = mock.data[0].line.color.slice(lineStart, lineStart + lineCount);
   });
 
   afterEach(destroyGraphDiv);
@@ -596,6 +600,7 @@ describe('parcoords', function() {
       restyleDimension('label', 'new label')()
         .then(restyleDimension('tickvals', [[0, 0.1, 0.4, 1, 2]]))
         .then(restyleDimension('ticktext', [['alpha', 'gamma', 'beta', 'omega', 'epsilon']]))
+        .then(restyleDimension('tickformat', '4s'))
         .then(restyleDimension('range', [[0, 2]]))
         .then(restyleDimension('constraintrange', [[0, 1]]))
         .then(restyleDimension('values', [[0, 0.1, 0.4, 1, 2, 0, 0.1, 0.4, 1, 2]]))
