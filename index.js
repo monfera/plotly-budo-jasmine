@@ -150,7 +150,8 @@ describe('parcoords initialization tests', function() {
       Plots.supplyDefaults(gd);
 
       var fullTrace = gd._fullData[0];
-      return Parcoords.calc(gd, fullTrace);
+      Parcoords.calc(gd, fullTrace);
+      return fullTrace;
     }
 
     var base = { type: 'parcoords' };
@@ -169,7 +170,7 @@ describe('parcoords initialization tests', function() {
         ]
       }));
 
-      expect(fullTrace[0].line).toEqual({
+      expect(fullTrace.line).toEqual({
         color: [35, 63, 21, 42],
         colorscale: attributes.line.colorscale.dflt,
         cauto: true,
@@ -193,7 +194,7 @@ describe('parcoords initialization tests', function() {
         ]
       }));
 
-      expect(fullTrace[0].line).toEqual({
+      expect(fullTrace.line).toEqual({
         color: [0.5, 0.5, 0.5, 0.5],
         colorscale: [[0, '#444'], [1, '#444']],
         cmin: 0,
@@ -214,7 +215,7 @@ describe('parcoords initialization tests', function() {
         ]
       }));
 
-      expect(fullTrace[0].line).toEqual({
+      expect(fullTrace.line).toEqual({
         color: [0.5, 0.5, 0.5, 0.5],
         colorscale: [[0, '#444'], [1, '#444']],
         autocolorscale: false,
