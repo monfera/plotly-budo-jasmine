@@ -100,47 +100,44 @@ describe('parcoords initialization tests', function() {
     it('\'dimension.visible\' should be set to false, and other props just passed through if \'values\' is not provided', function() {
       var fullTrace = _supply({
         dimensions: [{
-          visible: true, // should be overridden as `values` is not an array of non-zero length
           alienProperty: 'Alpha Centauri'
         }]
       });
-      expect(fullTrace.dimensions).toEqual([{visible: false, alienProperty: 'Alpha Centauri'}]);
+      expect(fullTrace.dimensions).toEqual([{visible: false, values: [], _index: 0}]);
     });
 
     it('\'dimension.visible\' should be set to false, and other props just passed through if \'values\' is an empty array', function() {
       var fullTrace = _supply({
         dimensions: [{
-          visible: true, // should be overridden as `values` is not an array of non-zero length
           values: [],
           alienProperty: 'Alpha Centauri'
         }]
       });
-      expect(fullTrace.dimensions).toEqual([{values: [], visible: false, alienProperty: 'Alpha Centauri'}]);
+      expect(fullTrace.dimensions).toEqual([{visible: false, values: [], _index: 0}]);
     });
 
     it('\'dimension.visible\' should be set to false, and other props just passed through if \'values\' is not an array', function() {
       var fullTrace = _supply({
         dimensions: [{
-          visible: true, // should be overridden as `values` is not an array of non-zero length
           values: null,
           alienProperty: 'Alpha Centauri'
         }]
       });
-      expect(fullTrace.dimensions).toEqual([{visible: false, values: null, alienProperty: 'Alpha Centauri'}]);
+      expect(fullTrace.dimensions).toEqual([{visible: false, values: [], _index: 0}]);
     });
 
     it('\'dimension.values\' should get truncated to a common shortest length', function() {
       var fullTrace = _supply({dimensions: [
         {values: [321, 534, 542, 674]},
         {values: [562, 124, 942]},
-        {values: [], visible: true}, // should be overwritten to false
+        {values: [], visible: true},
         {values: [1, 2], visible: false} // shouldn't be truncated to as false
       ]});
       expect(fullTrace.dimensions).toEqual([
-        {values: [321, 534, 542], visible: true, tickformat: '3s', _index: 0},
-        {values: [562, 124, 942], visible: true, tickformat: '3s', _index: 1},
-        {values: [], visible: false},
-        {values: [1, 2], visible: false}
+        {values: [], visible: true, tickformat: '3s', _index: 0},
+        {values: [], visible: true, tickformat: '3s', _index: 1},
+        {values: [], visible: true, tickformat: '3s', _index: 2},
+        {values: [1, 2], visible: false, _index: 3}
       ]);
     });
   });
@@ -679,23 +676,23 @@ describe('parcoords', function() {
 
       expect(tester.get()).toBe(false);
 
-      mouseEvent('mousemove', 853, 254);
-      mouseEvent('mouseover', 853, 254);
+      mouseEvent('mousemove', 853, 248);
+      mouseEvent('mouseover', 853, 248);
 
       window.setTimeout(function() {
 
-        expect(tester.get().hover.curveNumber).toBe(4);
+        expect(tester.get().hover && tester.get().hover.curveNumber).toBe(4);
 
         mouseEvent('mousemove', 800, 240);
         mouseEvent('mouseover', 800, 240);
 
         window.setTimeout(function() {
 
-          expect(tester.get().unhover.curveNumber).toBe(null);
+          expect(tester.get().unhover && tester.get().unhover.curveNumber).toBe(null);
           done();
-        }, 0);
+        }, 20);
 
-      }, 0);
+      }, 20);
 
     });
 
