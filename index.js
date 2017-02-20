@@ -677,8 +677,8 @@ describe('parcoords', function() {
 
       expect(tester.get()).toBe(false);
 
-      mouseEvent('mousemove', 853, 248);
-      mouseEvent('mouseover', 853, 248);
+      mouseEvent('mousemove', 916, 267);
+      mouseEvent('mouseover', 916, 267);
 
       window.setTimeout(function() {
 
