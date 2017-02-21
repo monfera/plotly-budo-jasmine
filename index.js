@@ -240,7 +240,7 @@ describe('parcoords', function() {
     mock.data[0].line.color = mock.data[0].line.color.slice(lineStart, lineStart + lineCount);
   });
 
-  afterEach(destroyGraphDiv);
+  //afterEach(destroyGraphDiv);
 
   describe('edge cases', function() {
 
@@ -802,6 +802,8 @@ describe('parcoords', function() {
         var gd = createGraphDiv();
         var mockCopy = Lib.extendDeep({}, mock);
         var mockCopy2 = Lib.extendDeep({}, mock);
+        mockCopy.data[0].domain = {x: [0, 0.45]};
+        mockCopy2.data[0].domain = {x: [0.55, 1]};
         mockCopy2.data[0].dimensions.splice(3, 4);
 
         expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(0);
@@ -830,6 +832,8 @@ describe('parcoords', function() {
         var gd = createGraphDiv();
         var mockCopy = Lib.extendDeep({}, mock);
         var mockCopy2 = Lib.extendDeep({}, mock);
+        mockCopy.data[0].domain = {y: [0, 0.35]};
+        mockCopy2.data[0].domain = {y: [0.65, 1]};
         mockCopy2.data[0].dimensions.splice(3, 4);
 
         expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(0);
