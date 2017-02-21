@@ -240,7 +240,7 @@ describe('parcoords', function() {
     mock.data[0].line.color = mock.data[0].line.color.slice(lineStart, lineStart + lineCount);
   });
 
-  //afterEach(destroyGraphDiv);
+  afterEach(destroyGraphDiv);
 
   describe('edge cases', function() {
 
