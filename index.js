@@ -677,15 +677,16 @@ describe('parcoords', function() {
 
       expect(tester.get()).toBe(false);
 
-      mouseEvent('mousemove', 916, 267);
-      mouseEvent('mouseover', 916, 267);
+      mouseEvent('mousemove', 324, 216);
+      mouseEvent('mouseover', 324, 216);
 
       window.setTimeout(function() {
 
-        expect(tester.get().hover && tester.get().hover.curveNumber).toBe(4);
+        expect(tester.get().hover && tester.get().hover.curveNumber).not.toBe(null);
+        expect(tester.get().hover && tester.get().hover.curveNumber).not.toBe(undefined);
 
-        mouseEvent('mousemove', 800, 240);
-        mouseEvent('mouseover', 800, 240);
+        mouseEvent('mousemove', 329, 153);
+        mouseEvent('mouseover', 329, 153);
 
         window.setTimeout(function() {
 
