@@ -240,7 +240,7 @@ describe('sankey', function() {
     mock.data[0].line.color = mock.data[0].line.color.slice(lineStart, lineStart + lineCount);
   });
 
-  afterEach(destroyGraphDiv);
+  //afterEach(destroyGraphDiv);
 
   describe('edge cases', function() {
 
@@ -468,6 +468,81 @@ describe('sankey', function() {
       });
     });
 
+
+  });
+
+  describe('sankey basic', function() {
+
+    var mock = require('plotly.js/test/image/mocks/sankey_new.json');
+
+    fit('', function() {
+
+      var gd = createGraphDiv();
+
+
+      mock.layout = {width: 1600, height: 400};
+      mock.data[0].domain = {x: [0, 0.4]};
+      var nodes = mock.data[0].nodes = [];
+      var links = [];
+      mock.data[0].links = [];
+      Plotly.plot(gd, mock.data, mock.layout);
+
+      var dims = mock.data[0].dimensions.slice(1, 4);
+
+      var dim, i, j, s, t;
+
+      for(j = 0; j < dims.length; j++) {
+        dim = dims[j];
+        for(i = 0; i < dim.ticktext.length; i++) {
+          nodes.push({
+            label: dim.ticktext[i],
+            visible: true
+          });
+        }
+      }
+
+      var nodeLabels = nodes.map(function(d) {return d.label;});
+
+      for(i = 0; i < dims[0].values.length; i++) {
+
+        for(j = 1; j < dims.length; j++) {
+          s = dims[j - 1];
+          t = dims[j];
+          links.push({
+            source: nodeLabels.indexOf(s.ticktext[s.values[i]]),
+            target: nodeLabels.indexOf(t.ticktext[t.values[i]]),
+            value: 1
+          });
+        }
+      }
+
+      var agg = {}, link;
+      for(i = 0; i < links.length; i++) {
+        link = links[i];
+        if(agg[link.source] == undefined) {
+          agg[link.source] = {};
+        }
+        if(agg[link.source][link.target] == undefined) {
+          agg[link.source][link.target] = 0;
+        }
+        agg[link.source][link.target] += link.value;
+      }
+
+      for(i in agg) {
+        for(j in agg[i]) {
+          mock.data[0].links.push({
+            label: '',
+            visible: true,
+            source: i,
+            target: j,
+            value: agg[i][j]
+          });
+        }
+      }
+
+      debugger
+
+    });
 
   });
 
