@@ -11,8 +11,8 @@ var Plotly = require('plotly.js');
 var Lib = require('plotly.js/src/lib');
 var d3 = require('../plotly.js/node_modules/d3');
 var Plots = require('plotly.js/src/plots/plots');
-var Parcoords = require('plotly.js/src/traces/parcoords');
-var attributes = require('plotly.js/src/traces/parcoords/attributes');
+var Sankey = require('plotly.js/src/traces/sankey');
+var attributes = require('plotly.js/src/traces/sankey/attributes');
 
 var createGraphDiv = require('plotly.js/test/jasmine/assets/create_graph_div');
 var destroyGraphDiv = require('plotly.js/test/jasmine/assets/destroy_graph_div');
@@ -20,32 +20,32 @@ var hasWebGLSupport = require('plotly.js/test/jasmine/assets/has_webgl_support')
 var mouseEvent = require('plotly.js/test/jasmine/assets/mouse_event');
 
 // mock with one dimension (zero panels); special case, as no panel can be rendered
-var mock1 = require('plotly.js/test/image/mocks/gl2d_parcoords_1.json');
+var mock1 = require('plotly.js/test/image/mocks/sankey_1.json');
 
 // mock with two dimensions (one panel); special case, e.g. left and right panel is obv. the same
-var mock2 = require('plotly.js/test/image/mocks/gl2d_parcoords_2.json');
+var mock2 = require('plotly.js/test/image/mocks/sankey_2.json');
 
 // mock with zero dimensions; special case, as no dimension can be rendered
 var mock0 = Lib.extendDeep({}, mock1);
 mock0.data[0].dimensions = [];
 
-var mock = require('plotly.js/test/image/mocks/gl2d_parcoords_large.json');
+var mock = require('plotly.js/test/image/mocks/sankey_large.json');
 
 var lineStart = 30;
 var lineCount = 10;
 
-describe('parcoords initialization tests', function() {
+describe('sankey initialization tests', function() {
 
   'use strict';
 
-  describe('parcoords defaults', function() {
+  describe('sankey defaults', function() {
 
     function _supply(traceIn) {
       var traceOut = { visible: true },
           defaultColor = '#444',
           layout = { };
 
-      Parcoords.supplyDefaults(traceIn, traceOut, defaultColor, layout);
+      Sankey.supplyDefaults(traceIn, traceOut, defaultColor, layout);
 
       return traceOut;
     }
@@ -142,7 +142,7 @@ describe('parcoords initialization tests', function() {
     });
   });
 
-  describe('parcoords calc', function() {
+  describe('sankey calc', function() {
 
     function _calc(trace) {
       var gd = { data: [trace] };
@@ -150,11 +150,11 @@ describe('parcoords initialization tests', function() {
       Plots.supplyDefaults(gd);
 
       var fullTrace = gd._fullData[0];
-      Parcoords.calc(gd, fullTrace);
+      Sankey.calc(gd, fullTrace);
       return fullTrace;
     }
 
-    var base = { type: 'parcoords' };
+    var base = { type: 'sankey' };
 
     it('\'colorscale\' should assume a default value if the \'color\' array is specified', function() {
 
@@ -229,9 +229,9 @@ describe('parcoords initialization tests', function() {
   });
 });
 
-describe('parcoords', function() {
+describe('sankey', function() {
 
-  if(!hasWebGLSupport('parcoords')) return;
+  if(!hasWebGLSupport('sankey')) return;
 
   beforeAll(function() {
     mock.data[0].dimensions.forEach(function(d) {
@@ -406,34 +406,6 @@ describe('parcoords', function() {
       });
     });
 
-    it('Truncates 60+ dimensions to 60', function(done) {
-
-      var mockCopy = Lib.extendDeep({}, mock1);
-      var newDimension, i, j;
-
-      mockCopy.layout.width = 1680;
-      for(i = 0; i < 70; i++) {
-        newDimension = Lib.extendDeep({}, mock1.data[0].dimensions[0]);
-        newDimension.id = 'S' + i;
-        newDimension.label = 'S' + i;
-        delete newDimension.constraintrange;
-        newDimension.range = [0, 999];
-        for(j = 0; j < 10; j++) {
-          newDimension.values[j] = Math.floor(1000 * Math.random());
-        }
-        mockCopy.data[0].dimensions[i] = newDimension;
-      }
-
-      var gd = createGraphDiv();
-      Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(function() {
-
-        expect(gd.data.length).toEqual(1);
-        expect(gd.data[0].dimensions.length).toEqual(60);
-        expect(document.querySelectorAll('.axis').length).toEqual(60);
-        done();
-      });
-    });
-
     it('Truncates dimension values to the shortest array, retaining only 3 lines', function(done) {
 
       var mockCopy = Lib.extendDeep({}, mock1);
@@ -531,7 +503,7 @@ describe('parcoords', function() {
 
     });
 
-    it('Calling `Plotly.plot` again should add the new parcoords', function(done) {
+    it('Calling `Plotly.plot` again should add the new sankey', function(done) {
 
       var reversedMockCopy = Lib.extendDeep({}, mockCopy);
       reversedMockCopy.data[0].dimensions = reversedMockCopy.data[0].dimensions.slice().reverse();
@@ -561,7 +533,7 @@ describe('parcoords', function() {
 
     });
 
-    it('Calling `Plotly.restyle` with a string path should amend the preexisting parcoords', function(done) {
+    it('Calling `Plotly.restyle` with a string path should amend the preexisting sankey', function(done) {
 
       expect(gd.data.length).toEqual(1);
 
@@ -606,7 +578,7 @@ describe('parcoords', function() {
         .then(done);
     });
 
-    it('Calling `Plotly.restyle` with an object should amend the preexisting parcoords', function(done) {
+    it('Calling `Plotly.restyle` with an object should amend the preexisting sankey', function(done) {
 
       var newStyle = Lib.extendDeep({}, mockCopy.data[0].line);
       newStyle.colorscale = 'Viridis';
@@ -655,50 +627,7 @@ describe('parcoords', function() {
 
     });
 
-    it('Should emit a \'plotly_hover\' event', function(done) {
-
-      var tester = (function() {
-
-        var eventCalled = false;
-
-        return {
-          set: function(d) {eventCalled = d;},
-          get: function() {return eventCalled;}
-        };
-      })();
-
-      gd.on('plotly_hover', function(d) {
-        tester.set({hover: d});
-      });
-
-      gd.on('plotly_unhover', function(d) {
-        tester.set({unhover: d});
-      });
-
-      expect(tester.get()).toBe(false);
-
-      mouseEvent('mousemove', 324, 216);
-      mouseEvent('mouseover', 324, 216);
-
-      window.setTimeout(function() {
-
-        expect(tester.get().hover && tester.get().hover.curveNumber).not.toBe(null);
-        expect(tester.get().hover && tester.get().hover.curveNumber).not.toBe(undefined);
-
-        mouseEvent('mousemove', 329, 153);
-        mouseEvent('mouseover', 329, 153);
-
-        window.setTimeout(function() {
-
-          expect(tester.get().unhover && tester.get().unhover.curveNumber).toBe(null);
-          done();
-        }, 20);
-
-      }, 20);
-
-    });
-
-    it('Calling `Plotly.relayout` with string should amend the preexisting parcoords', function(done) {
+    it('Calling `Plotly.relayout` with string should amend the preexisting sankey', function(done) {
 
       expect(gd.layout.width).toEqual(1184);
 
@@ -719,7 +648,7 @@ describe('parcoords', function() {
 
     });
 
-    it('Calling `Plotly.relayout`with object should amend the preexisting parcoords', function(done) {
+    it('Calling `Plotly.relayout`with object should amend the preexisting sankey', function(done) {
 
       expect(gd.layout.width).toEqual(1184);
 
@@ -756,7 +685,7 @@ describe('parcoords', function() {
         expect(gd.data.length).toEqual(1);
 
         Plotly.deleteTraces(gd, 0).then(function() {
-          expect(d3.selectAll('.parcoords-line-layers').node()).toEqual(null);
+          expect(d3.selectAll('.sankey').node()).toEqual(null);
           expect(gd.data.length).toEqual(0);
           done();
         });
@@ -783,13 +712,13 @@ describe('parcoords', function() {
           return Plotly.deleteTraces(gd, [0]);
         })
         .then(function() {
-          expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(1);
+          expect(document.querySelectorAll('.sankey').length).toEqual(1);
           expect(document.querySelectorAll('.yAxis').length).toEqual(7);
           expect(gd.data.length).toEqual(1);
           return Plotly.deleteTraces(gd, 0);
         })
         .then(function() {
-          expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(0);
+          expect(document.querySelectorAll('.sankey').length).toEqual(0);
           expect(document.querySelectorAll('.yAxis').length).toEqual(0);
           expect(gd.data.length).toEqual(0);
           done();
@@ -798,7 +727,7 @@ describe('parcoords', function() {
 
     describe('Having two datasets', function() {
 
-      it('Two subsequent calls to Plotly.plot should create two parcoords rows', function(done) {
+      it('Two subsequent calls to Plotly.plot should create two sankey rows', function(done) {
 
         var gd = createGraphDiv();
         var mockCopy = Lib.extendDeep({}, mock);
@@ -807,13 +736,13 @@ describe('parcoords', function() {
         mockCopy2.data[0].domain = {x: [0.55, 1]};
         mockCopy2.data[0].dimensions.splice(3, 4);
 
-        expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(0);
+        expect(document.querySelectorAll('.sankey-line-layers').length).toEqual(0);
 
         Plotly.plot(gd, mockCopy)
           .then(function() {
 
             expect(1).toEqual(1);
-            expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(1);
+            expect(document.querySelectorAll('.sankey-line-layers').length).toEqual(1);
             expect(gd.data.length).toEqual(1);
 
             return Plotly.plot(gd, mockCopy2);
@@ -821,14 +750,14 @@ describe('parcoords', function() {
           .then(function() {
 
             expect(1).toEqual(1);
-            expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(2);
+            expect(document.querySelectorAll('.sankey-line-layers').length).toEqual(2);
             expect(gd.data.length).toEqual(2);
 
             done();
           });
       });
 
-      it('Plotly.addTraces should add a new parcoords row', function(done) {
+      it('Plotly.addTraces should add a new sankey row', function(done) {
 
         var gd = createGraphDiv();
         var mockCopy = Lib.extendDeep({}, mock);
@@ -837,19 +766,19 @@ describe('parcoords', function() {
         mockCopy2.data[0].domain = {y: [0.65, 1]};
         mockCopy2.data[0].dimensions.splice(3, 4);
 
-        expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(0);
+        expect(document.querySelectorAll('.sankey-line-layers').length).toEqual(0);
 
         Plotly.plot(gd, mockCopy)
           .then(function() {
 
-            expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(1);
+            expect(document.querySelectorAll('.sankey-line-layers').length).toEqual(1);
             expect(gd.data.length).toEqual(1);
 
             return Plotly.addTraces(gd, [mockCopy2.data[0]]);
           })
           .then(function() {
 
-            expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(2);
+            expect(document.querySelectorAll('.sankey-line-layers').length).toEqual(2);
             expect(gd.data.length).toEqual(2);
 
             done();
@@ -857,7 +786,7 @@ describe('parcoords', function() {
 
       });
 
-      it('Plotly.restyle should update the existing parcoords row', function(done) {
+      it('Plotly.restyle should update the existing sankey row', function(done) {
 
         var gd = createGraphDiv();
         var mockCopy = Lib.extendDeep({}, mock);
@@ -883,12 +812,12 @@ describe('parcoords', function() {
         mockCopy2.data[0].dimensions[2].tickvals = [0, 1, 2, 2.5, 3];
         mockCopy2.data[0].dimensions[2].values = mockCopy2.data[0].dimensions[2].values.map(numberUpdater);
 
-        expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(0);
+        expect(document.querySelectorAll('.sankey-line-layers').length).toEqual(0);
 
         Plotly.plot(gd, mockCopy)
           .then(function() {
 
-            expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(1);
+            expect(document.querySelectorAll('.sankey-line-layers').length).toEqual(1);
             expect(gd.data.length).toEqual(1);
 
             return Plotly.restyle(gd, {
@@ -898,7 +827,7 @@ describe('parcoords', function() {
           })
           .then(function() {
 
-            expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(1);
+            expect(document.querySelectorAll('.sankey-line-layers').length).toEqual(1);
             expect(gd.data.length).toEqual(1);
 
             done();
