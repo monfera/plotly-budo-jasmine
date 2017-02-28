@@ -10,6 +10,7 @@ jasmine.getEnv().addReporter(new jasmineReporters.TapReporter());
 var Plotly = require('plotly.js');
 var Lib = require('plotly.js/src/lib');
 var d3 = require('../plotly.js/node_modules/d3');
+var d3sankey = require('../plotly.js/node_modules/d3-sankey').sankey;
 var Plots = require('plotly.js/src/plots/plots');
 var Sankey = require('plotly.js/src/traces/sankey');
 var attributes = require('plotly.js/src/traces/sankey/attributes');
@@ -480,12 +481,11 @@ describe('sankey', function() {
       var gd = createGraphDiv();
 
 
-      mock.layout = {width: 1600, height: 400};
-      mock.data[0].domain = {x: [0, 0.4]};
-      var nodes = mock.data[0].nodes = [];
+      mock.data[0].domain = {x: [0, 1], y: [0, 1]};
+      var nodes = [];
+      mock.data[0].nodes = [];
       var links = [];
       mock.data[0].links = [];
-      Plotly.plot(gd, mock.data, mock.layout);
 
       var dims = mock.data[0].dimensions.slice(1, 4);
 
@@ -540,7 +540,23 @@ describe('sankey', function() {
         }
       }
 
-      debugger
+      mock.data[0].nodes = nodes;
+      nodes = nodes.map(function(d) {return {name: d.label};});
+      links = mock.data[0].links.map(function(d) {
+        return {
+          source: nodes[d.source],
+          target: nodes[d.target],
+          value: d.value
+        };
+      });
+
+      var sankey = d3sankey()
+        .nodes(nodes)
+        .links(links);
+
+      Plotly.plot(gd, mock.data, mock.layout);
+
+      //debugger
 
     });
 
