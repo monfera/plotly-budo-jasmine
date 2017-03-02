@@ -500,6 +500,16 @@ describe('sankey', function() {
         }
       }
 
+      // sort nodes however
+      if(0)
+      nodes.sort(function(a, b) {
+        return a.label < b.label
+          ? -1
+          : a.label > b.label
+            ? 1
+            : 0
+      })
+
       var nodeLabels = nodes.map(function(d) {return d.label;});
 
       for(i = 0; i < dims[0].values.length; i++) {
