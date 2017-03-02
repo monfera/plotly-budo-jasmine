@@ -10,7 +10,6 @@ jasmine.getEnv().addReporter(new jasmineReporters.TapReporter());
 var Plotly = require('plotly.js');
 var Lib = require('plotly.js/src/lib');
 var d3 = require('../plotly.js/node_modules/d3');
-var d3sankey = require('../plotly.js/node_modules/d3-sankey').sankey;
 var Plots = require('plotly.js/src/plots/plots');
 var Sankey = require('plotly.js/src/traces/sankey');
 var attributes = require('plotly.js/src/traces/sankey/attributes');
@@ -516,43 +515,58 @@ describe('sankey', function() {
         }
       }
 
-      var agg = {}, link;
-      for(i = 0; i < links.length; i++) {
-        link = links[i];
-        if(agg[link.source] == undefined) {
-          agg[link.source] = {};
-        }
-        if(agg[link.source][link.target] == undefined) {
-          agg[link.source][link.target] = 0;
-        }
-        agg[link.source][link.target] += link.value;
-      }
+      var aggregate = false;
 
-      for(i in agg) {
-        for(j in agg[i]) {
+      if(aggregate) {
+
+        var agg = {}, link;
+        for (i = 0; i < links.length; i++) {
+          link = links[i];
+          if (agg[link.source] == undefined) {
+            agg[link.source] = {};
+          }
+          if (agg[link.source][link.target] == undefined) {
+            agg[link.source][link.target] = 0;
+          }
+          agg[link.source][link.target] += link.value;
+        }
+
+        for (i in agg) {
+          for (j in agg[i]) {
+            mock.data[0].links.push({
+              label: '',
+              visible: true,
+              source: i,
+              target: j,
+              value: agg[i][j]
+            });
+          }
+        }
+      } else {
+        for (i = 0; i < links.length; i++) {
+          link = links[i];
           mock.data[0].links.push({
             label: '',
             visible: true,
-            source: i,
-            target: j,
-            value: agg[i][j]
+            source:  link.source,
+            target: link.target,
+            value: link.value
           });
         }
+        mock.data[0].links.sort(function(a, b) {
+          return a.source < b.source
+            ? -1
+            : a.source > b.source
+              ? 1
+              : a.target < b.target
+                ? -1
+                : a.target > b.target
+                  ? 1
+                  : 0
+        })
       }
 
       mock.data[0].nodes = nodes;
-      nodes = nodes.map(function(d) {return {name: d.label};});
-      links = mock.data[0].links.map(function(d) {
-        return {
-          source: nodes[d.source],
-          target: nodes[d.target],
-          value: d.value
-        };
-      });
-
-      var sankey = d3sankey()
-        .nodes(nodes)
-        .links(links);
 
       Plotly.plot(gd, mock.data, mock.layout);
 
