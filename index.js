@@ -501,7 +501,7 @@ describe('sankey', function() {
       }
 
       // sort nodes however
-      if(0)
+      if("sort")
       nodes.sort(function(a, b) {
         return a.label < b.label
           ? -1
