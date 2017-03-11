@@ -486,7 +486,7 @@ describe('sankey', function() {
       var links = [];
       mock.data[0].links = [];
 
-      var dims = mock.data[0].dimensions.slice(1, 4);
+      var dims = mock.data[0].dimensions.slice(1, 4).reverse();
 
       var dim, i, j, s, t;
 
@@ -517,10 +517,12 @@ describe('sankey', function() {
         for(j = 1; j < dims.length; j++) {
           s = dims[j - 1];
           t = dims[j];
+          debugger
           links.push({
             source: nodeLabels.indexOf(s.ticktext[s.values[i]]),
             target: nodeLabels.indexOf(t.ticktext[t.values[i]]),
-            value: 1
+            value: 1,
+            label: s.ticktext[s.values[i]] + ' --> ' + t.ticktext[t.values[i]]
           });
         }
       }
@@ -544,24 +546,18 @@ describe('sankey', function() {
         for (i in agg) {
           for (j in agg[i]) {
             mock.data[0].links.push({
-              label: '',
               visible: true,
               source: i,
               target: j,
-              value: agg[i][j]
+              value: agg[i][j],
+              label: s.ticktext[s.values[i]] + ' --> ' + t.ticktext[t.values[i]]
             });
           }
         }
       } else {
         for (i = 0; i < links.length; i++) {
           link = links[i];
-          mock.data[0].links.push({
-            label: '',
-            visible: true,
-            source:  link.source,
-            target: link.target,
-            value: link.value
-          });
+          mock.data[0].links.push(link);
         }
         mock.data[0].links.sort(function(a, b) {
           return a.source < b.source
