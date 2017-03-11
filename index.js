@@ -499,7 +499,7 @@ describe('sankey', function() {
       var links = [];
       mock.data[0].links = [];
 
-      var dims = mock.data[0].dimensions.slice(3, 6).reverse();
+      var dims = mock.data[0].dimensions.slice(3, 7).reverse();
 
       var dim, i, j, s, t;
 
