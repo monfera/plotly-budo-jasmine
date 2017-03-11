@@ -475,6 +475,19 @@ describe('sankey', function() {
 
     var mock = require('plotly.js/test/image/mocks/sankey_new.json');
 
+    function breakToLines(n, s) {
+      var words = s.split(/\s+/);
+      var lines = [];
+      for(var w = 0; w < words.length; ) {
+        for(var l = 0, line = []; w < words.length && l + words[w].length <= n; w++) {
+          l += words[w].length + 1;
+          line.push(words[w]);
+        }
+        lines.push(line.join(' '));
+      }
+      return lines.join('<br>');
+    }
+
     fit('', function() {
 
       var gd = createGraphDiv();
@@ -486,7 +499,7 @@ describe('sankey', function() {
       var links = [];
       mock.data[0].links = [];
 
-      var dims = mock.data[0].dimensions.slice(1, 4).reverse();
+      var dims = mock.data[0].dimensions.slice(3, 6).reverse();
 
       var dim, i, j, s, t;
 
@@ -511,18 +524,22 @@ describe('sankey', function() {
       })
 
       var nodeLabels = nodes.map(function(d) {return d.label;});
+      var narrativeDim = mock.data[0].dimensions[0];
+      var damageDim = mock.data[0].dimensions[7];
 
       for(i = 0; i < dims[0].values.length; i++) {
 
         for(j = 1; j < dims.length; j++) {
           s = dims[j - 1];
           t = dims[j];
-          debugger
+
           links.push({
             source: nodeLabels.indexOf(s.ticktext[s.values[i]]),
             target: nodeLabels.indexOf(t.ticktext[t.values[i]]),
             value: 1,
-            label: s.ticktext[s.values[i]] + ' --> ' + t.ticktext[t.values[i]]
+            // label: s.ticktext[s.values[i]] + ' --> ' + t.ticktext[t.values[i]]
+            label: breakToLines(50, narrativeDim.ticktext[narrativeDim.values[i]]) + '<br>'//.replace(/(.{50})/g,"$1<br>") + '<br>'
+             + '<br>' + 'Damage: ' + (damageDim.values[i] ? '$' + d3.format(',.0f')(damageDim.values[i]) : 'unknown') + '<br>'
           });
         }
       }
