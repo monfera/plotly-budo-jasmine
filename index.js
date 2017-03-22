@@ -16,7 +16,6 @@ var attributes = require('plotly.js/src/traces/parcoords/attributes');
 
 var createGraphDiv = require('plotly.js/test/jasmine/assets/create_graph_div');
 var destroyGraphDiv = require('plotly.js/test/jasmine/assets/destroy_graph_div');
-var hasWebGLSupport = require('plotly.js/test/jasmine/assets/has_webgl_support');
 var mouseEvent = require('plotly.js/test/jasmine/assets/mouse_event');
 
 // mock with one dimension (zero panels); special case, as no panel can be rendered
@@ -231,8 +230,6 @@ describe('parcoords initialization tests', function() {
 
 describe('parcoords', function() {
 
-  if(!hasWebGLSupport('parcoords')) return;
-
   beforeAll(function() {
     mock.data[0].dimensions.forEach(function(d) {
       d.values = d.values.slice(lineStart, lineStart + lineCount);
@@ -240,7 +237,7 @@ describe('parcoords', function() {
     mock.data[0].line.color = mock.data[0].line.color.slice(lineStart, lineStart + lineCount);
   });
 
-  afterEach(destroyGraphDiv);
+  //afterEach(destroyGraphDiv);
 
   describe('edge cases', function() {
 
@@ -511,6 +508,118 @@ describe('parcoords', function() {
       };
       gd = createGraphDiv();
       Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(done);
+
+      var newPlotLayout = {
+
+        "hovermode": 'closest',
+      };
+
+      function randomInitData(size) {
+        var out = new Array(size)
+        for (var i = 0; i < size; i++) {
+          out[i] = Math.random() * 10;
+        }
+        return out;
+      };
+      var xData = randomInitData(10000);
+      var yData = randomInitData(10000);
+      var zData = randomInitData(10000);
+      var color = randomInitData(10000);
+
+      var parCoordSetup = {
+        'layout': {width: 1600, height: 500},
+        'data': [{
+
+          "padding": 80,
+          "type": "parcoords",
+          "tickdistance": 50,
+          "line": {
+            "showscale": true,
+            "reversescale": true,
+            "colorbar": {
+              "title": "&nbsp;"
+            },
+            "colorscale": "Jet",
+            "color": color,
+            "cauto": true
+          },
+          "dimensions": [{
+            "id": "sample.dim.A",
+            "label": "sample.dim.A",
+            "values": xData
+          }, {
+            "id": "sample.dim.B",
+            "label": "sample.dim.B",
+            "values": yData
+          }, {
+            "id": "sample.resp.Bukin",
+            "label": "sample.resp.Bukin",
+            "values": zData
+          }]
+        }]
+      };
+
+      function addPoints(count) {
+        xData = xData.concat(randomInitData(count));
+        yData = yData.concat(randomInitData(count));
+        zData = zData.concat(randomInitData(count));
+        color = color.concat(randomInitData(count));
+      };
+
+      var intervalId = -1;
+      var noOfUpdates = 2;
+      var pointsToAdd = 0;
+
+      function autoUpdates() {
+        var count = 0;
+        intervalId = setInterval(function() {
+          if (count == noOfUpdates) {
+            clearInterval(intervalId);
+            Lib.notifier("Updates complete!!", 5000);
+            xData = [];
+            yData = [];
+            zData = [];
+            color = [];
+            return;
+          }
+          count++;
+          Lib.notifier("UpdateCount= " + count, 3000)
+          addPoints(pointsToAdd);
+          var restyleData = {
+            "line" : {
+              "showscale" : true,
+              "reversescale" : true,
+              "colorbar" : {
+                "title" : "&nbsp;"
+              },
+              "colorscale" : "Jet",
+              "color": color,
+              "cauto" : true
+            },
+            "dimensions" : [[{
+              "id" : "sample.dim.A",
+              "label" : "sample.dim.A",
+              "values" : xData
+            }, {
+              "id" : "sample.dim.B",
+              "label" : "sample.dim.B",
+              "values" : yData
+
+
+            }, {
+              "id" : "sample.resp.Bukin",
+              "label" : "sample.resp.Bukin",
+              "values" : zData
+            }]]
+          };
+          Plotly.restyle(gd, restyleData);
+        }, 1000);
+      };
+
+      Plotly.newPlot(gd, parCoordSetup).then(function() {
+        autoUpdates();
+
+      });
     });
 
     it('`Plotly.plot` should have proper fields on `gd.data` on initial rendering', function() {
@@ -606,8 +715,8 @@ describe('parcoords', function() {
         .then(done);
     });
 
-    it('Calling `Plotly.restyle` with an object should amend the preexisting parcoords', function(done) {
-
+    fit('Calling `Plotly.restyle` with an object should amend the preexisting parcoords', function(done) {
+done; return;
       var newStyle = Lib.extendDeep({}, mockCopy.data[0].line);
       newStyle.colorscale = 'Viridis';
       newStyle.reversescale = false;
