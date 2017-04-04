@@ -590,7 +590,10 @@ describe('sankey', function() {
       }
 
       mock.data[0].nodes = nodes;
+      delete mock.data[0].dimensions;
+      delete mock.data[0].line;
 
+      mock = require('./drones.json')
       Plotly.plot(gd, mock.data, mock.layout);
 
       //debugger
