@@ -488,18 +488,18 @@ describe('sankey', function() {
       return lines.join('<br>');
     }
 
-    fit('', function() {
-
-      var gd = createGraphDiv();
+    function makeMock() {
 
 
-      mock.data[0].domain = {x: [0, 1], y: [0, 1]};
+      var newMock = JSON.parse(JSON.stringify(mock));
+
+      newMock.data[0].domain = {x: [0, 1], y: [0, 1]};
       var nodes = [];
-      mock.data[0].nodes = [];
+      newMock.data[0].nodes = [];
       var links = [];
-      mock.data[0].links = [];
+      newMock.data[0].links = [];
 
-      var dims = mock.data[0].dimensions.slice(3, 7).reverse();
+      var dims = newMock.data[0].dimensions.slice(3, 7).reverse();
 
       var dim, i, j, s, t;
 
@@ -515,20 +515,20 @@ describe('sankey', function() {
 
       // sort nodes however
       if("sort")
-      nodes.sort(function(a, b) {
-        return a.label < b.label
-          ? -1
-          : a.label > b.label
-            ? 1
-            : 0
-      })
+        nodes.sort(function(a, b) {
+          return a.label < b.label
+            ? -1
+            : a.label > b.label
+              ? 1
+              : 0
+        })
 
       var nodeLabels = nodes.map(function(d) {return d.label;});
-      var narrativeDim = mock.data[0].dimensions[0];
-      var damageDim = mock.data[0].dimensions[7];
+      var narrativeDim = newMock.data[0].dimensions[0];
+      var damageDim = newMock.data[0].dimensions[7];
 
       for(i = 0; i < dims[0].values.length; i++) {
-
+        if(Math.random() > 0.5) continue;
         for(j = 1; j < dims.length; j++) {
           s = dims[j - 1];
           t = dims[j];
@@ -539,30 +539,32 @@ describe('sankey', function() {
             value: 1,
             // label: s.ticktext[s.values[i]] + ' --> ' + t.ticktext[t.values[i]]
             label: breakToLines(50, narrativeDim.ticktext[narrativeDim.values[i]]) + '<br>'//.replace(/(.{50})/g,"$1<br>") + '<br>'
-             + '<br>' + 'Damage: ' + (damageDim.values[i] ? '$' + d3.format(',.0f')(damageDim.values[i]) : 'unknown') + '<br>'
+            + '<br>' + 'Damage: ' + (damageDim.values[i] ? '$' + d3.format(',.0f')(damageDim.values[i]) : 'unknown') + '<br>'
           });
         }
       }
 
-      var aggregate = false;
+      var aggregate = true;
 
       if(aggregate) {
 
         var agg = {}, link;
         for (i = 0; i < links.length; i++) {
           link = links[i];
-          if (agg[link.source] == undefined) {
+          if (agg[link.source] === undefined) {
             agg[link.source] = {};
           }
-          if (agg[link.source][link.target] == undefined) {
+          if (agg[link.source][link.target] === undefined) {
             agg[link.source][link.target] = 0;
           }
           agg[link.source][link.target] += link.value;
         }
 
-        for (i in agg) {
-          for (j in agg[i]) {
-            mock.data[0].links.push({
+        for (var ii in agg) {
+          i = parseInt(ii);
+          for (var jj in agg[i]) {
+            j = parseInt(jj)
+            newMock.data[0].links.push({
               visible: true,
               source: i,
               target: j,
@@ -574,9 +576,9 @@ describe('sankey', function() {
       } else {
         for (i = 0; i < links.length; i++) {
           link = links[i];
-          mock.data[0].links.push(link);
+          newMock.data[0].links.push(link);
         }
-        mock.data[0].links.sort(function(a, b) {
+        newMock.data[0].links.sort(function(a, b) {
           return a.source < b.source
             ? -1
             : a.source > b.source
@@ -589,12 +591,34 @@ describe('sankey', function() {
         })
       }
 
-      mock.data[0].nodes = nodes;
-      delete mock.data[0].dimensions;
-      delete mock.data[0].line;
+      newMock.data[0].nodes = nodes;
 
-      mock = require('./drones.json')
-      Plotly.plot(gd, mock.data, mock.layout);
+/*
+      newMock.data[0].links = newMock.data[0].links.filter(function(d) {return d.visible && d.value !== 0});
+      var tmpSources = newMock.data[0].links.map(function(d) {return d.source})
+      var tmpTargets = newMock.data[0].links.map(function(d) {return d.target})
+      var tmpLinkedNodes = tmpSources.concat(tmpTargets).filter(function(d,i,a) {return i === a.indexOf(d)})
+      newMock.data[0].nodes = newMock.data[0].nodes.filter(function(d, i) {return d.visible && tmpLinkedNodes.indexOf(i) !== -1})
+*/
+
+      delete newMock.data[0].dimensions;
+      delete newMock.data[0].line;
+
+      return newMock
+    }
+
+    fit('', function() {
+
+      var gd = createGraphDiv();
+
+
+
+      //mock = require('./drones.json')
+      var newMock = makeMock()
+      Plotly.newPlot(gd, newMock.data, newMock.layout);
+
+      window.setInterval(function() {newMock = makeMock();  Plotly.newPlot(gd, newMock.data, newMock.layout)}, 2000)
+
 
       //debugger
 

@@ -17,6 +17,8 @@
           1
         ]
       },
+      "orientation": "h",
+      "followmouse": true,
       "nodes": [
         {
           "label": "Afghanistan",
@@ -24,6 +26,7 @@
         },
         {
           "label": "Air Force",
+          "color": "red",
           "visible": true
         },
         {
@@ -252,6 +255,7 @@
           "source": 1,
           "target": 0,
           "value": 1,
+          "color": "rgba(255,0,0,0.66)",
           "label": "An armed Predator mysteriously vanished in<br>Afghanistan about 5 hours into a flight. The skies<br>were clear and the aircraft was flying well above<br>a mountain range when the return satellite data<br>link was lost to Creech Air Force Base in Nevada.<br>The transponder signal was lost three minutes<br>later. Investigators concluded that there was no<br>evidence of bad weather, icing, fuel loss or pilot<br>error. A sergeant raised the possibility that the<br>aircraft could have had its satellite links hacked<br>or hijacked, saying: \"If somebody else was on the<br>same frequencies, they could have taken over the<br>aircraft or just knocked it out completely.\"<br>Investigators found no evidence of hacking.<br><br>Damage: $3,900,000<br>"
         },
         {
