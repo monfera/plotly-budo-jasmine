@@ -475,6 +475,8 @@ describe('sankey', function() {
 
     var mock = require('plotly.js/test/image/mocks/sankey_new.json');
 
+    mock.data[0].nodepad = 7;
+
     function breakToLines(n, s) {
       var words = s.split(/\s+/);
       var lines = [];
@@ -488,7 +490,7 @@ describe('sankey', function() {
       return lines.join('<br>');
     }
 
-    function makeMock() {
+    function makeMock(skip) {
 
 
       var newMock = JSON.parse(JSON.stringify(mock));
@@ -528,7 +530,7 @@ describe('sankey', function() {
       var damageDim = newMock.data[0].dimensions[7];
 
       for(i = 0; i < dims[0].values.length; i++) {
-        if(Math.random() > 0.5) continue;
+        if(skip[i] < 0) continue;
         for(j = 1; j < dims.length; j++) {
           s = dims[j - 1];
           t = dims[j];
@@ -614,10 +616,24 @@ describe('sankey', function() {
 
 
       //mock = require('./drones.json')
-      var newMock = makeMock()
+
+      var skip = mock.data[0].dimensions[0].values.map(function(d) {return -1})
+
+      var newMock = makeMock(skip)
       Plotly.newPlot(gd, newMock.data, newMock.layout);
 
-      window.setInterval(function() {newMock = makeMock();  Plotly.newPlot(gd, newMock.data, newMock.layout)}, 2000)
+      var s = 0;
+      //if(0)
+      window.setInterval(function() {
+/*
+        for(s = 0; s < 1; s++) {
+          skip[Math.floor(Math.random() * skip.length)] = 1;
+        }
+*/
+        skip[s++] = 1;
+        newMock = makeMock(skip);
+        Plotly.restyle(gd, 'links', [newMock.data[0].links])
+      }, 500)
 
 
       //debugger
