@@ -475,7 +475,7 @@ describe('sankey', function() {
 
     var mock = require('plotly.js/test/image/mocks/sankey_new.json');
 
-    mock.data[0].nodepad = 7;
+    //mock.data[0].nodepad = 7;
 
     function breakToLines(n, s) {
       var words = s.split(/\s+/);
@@ -617,20 +617,29 @@ describe('sankey', function() {
 
       //mock = require('./drones.json')
 
-      var skip = mock.data[0].dimensions[0].values.map(function(d) {return -1})
+      var skip = mock.data[0].dimensions[0].values.map(function(d) {return 1})
 
       var newMock = makeMock(skip)
-      Plotly.newPlot(gd, newMock.data, newMock.layout);
+      Plotly.newPlot(gd, newMock.data, newMock.layout).then(function() {
+
+        //skip[0] = 1;
+        //window.setTimeout(function() {Plotly.restyle(gd, 'links', [makeMock(skip).data[0].links])}, 500)
+
+
+      });
 
       var s = 0;
-      //if(0)
-      window.setInterval(function() {
+      if(1)
+      var loop = window.setInterval(function() {
 /*
         for(s = 0; s < 1; s++) {
           skip[Math.floor(Math.random() * skip.length)] = 1;
         }
 */
-        skip[s++] = 1;
+        //skip[s++] = 1;
+        if(true && s === skip.length) {
+          window.clearTimeout(loop);
+        }
         newMock = makeMock(skip);
         Plotly.restyle(gd, 'links', [newMock.data[0].links])
       }, 500)
