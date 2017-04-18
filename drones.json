@@ -2,7 +2,13 @@
   "layout": {
     "title": "Fallen from the skies: drone crashes database - Washington Post",
     "width": 800,
-    "height": 500
+    "height": 500,
+    modeBarButtonsToAdd: [{
+      name: 'show',
+      click: function(gd)  {
+      Plotly.restyle(gd, 'visible', true)   ;
+    }
+    }]
   },
   "data": [
     {
