@@ -14,9 +14,59 @@ var Plots = require('plotly.js/src/plots/plots');
 var Parcoords = require('plotly.js/src/traces/parcoords');
 var attributes = require('plotly.js/src/traces/parcoords/attributes');
 
-var createGraphDiv = require('plotly.js/test/jasmine/assets/create_graph_div');
-var destroyGraphDiv = require('plotly.js/test/jasmine/assets/destroy_graph_div');
-var mouseEvent = require('plotly.js/test/jasmine/assets/mouse_event');
+function createGraphDiv() {
+  var gd = document.createElement('div');
+  gd.id = 'graph';
+  document.body.appendChild(gd);
+
+  // force the graph to be at position 0,0 no matter what
+  gd.style.position = 'fixed';
+  gd.style.left = 0;
+  gd.style.top = 0;
+
+  return gd;
+}
+function destroyGraphDiv() { return
+  var gd = document.getElementById('graph');
+
+  if(gd) document.body.removeChild(gd);
+}var mouseEvent = function(type, x, y, opts) {
+  var fullOpts = {
+    bubbles: true,
+    clientX: x,
+    clientY: y
+  };
+
+  // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent
+  if(opts && opts.buttons) {
+    fullOpts.buttons = opts.buttons;
+  }
+  if(opts && opts.altKey) {
+    fullOpts.altKey = opts.altKey;
+  }
+  if(opts && opts.ctrlKey) {
+    fullOpts.ctrlKey = opts.ctrlKey;
+  }
+  if(opts && opts.metaKey) {
+    fullOpts.metaKey = opts.metaKey;
+  }
+  if(opts && opts.shiftKey) {
+    fullOpts.shiftKey = opts.shiftKey;
+  }
+
+  var el = (opts && opts.element) || document.elementFromPoint(x, y),
+      ev;
+
+  if(type === 'scroll') {
+    ev = new window.WheelEvent('wheel', Lib.extendFlat({}, fullOpts, opts));
+  } else {
+    ev = new window.MouseEvent(type, fullOpts);
+  }
+
+  el.dispatchEvent(ev);
+
+  return el;
+};
 
 // mock with one dimension (zero panels); special case, as no panel can be rendered
 var mock1 = require('plotly.js/test/image/mocks/gl2d_parcoords_1.json');
@@ -36,6 +86,18 @@ var lineCount = 10;
 describe('parcoords initialization tests', function() {
 
   'use strict';
+
+  describe('parcoords global defaults', function() {
+
+    it('should not coerce trace opacity', function() {
+      var gd = Lib.extendDeep({}, mock1);
+
+      Plots.supplyDefaults(gd);
+
+      expect(gd._fullData[0].opacity).toBeUndefined();
+    });
+
+  });
 
   describe('parcoords defaults', function() {
 
@@ -194,14 +256,11 @@ describe('parcoords initialization tests', function() {
       }));
 
       expect(fullTrace.line).toEqual({
-        color: [0.5, 0.5, 0.5, 0.5],
-        colorscale: [[0, '#444'], [1, '#444']],
-        cmin: 0,
-        cmax: 1
+        color: '#444'
       });
     });
 
-    it('use a singular \'color\' even if a \'colorscale\' is supplied', function() {
+    it('use a singular \'color\' even if a \'colorscale\' is supplied as \'color\' is not an array', function() {
 
       var fullTrace = _calc(Lib.extendDeep({}, base, {
         line: {
@@ -215,20 +274,13 @@ describe('parcoords initialization tests', function() {
       }));
 
       expect(fullTrace.line).toEqual({
-        color: [0.5, 0.5, 0.5, 0.5],
-        colorscale: [[0, '#444'], [1, '#444']],
-        autocolorscale: false,
-        showscale: false,
-        reversescale: false,
-        cauto: true,
-        cmin: 0,
-        cmax: 1
+        color: '#444'
       });
     });
   });
 });
 
-describe('parcoords', function() {
+describe('@noCI parcoords', function() {
 
   beforeAll(function() {
     mock.data[0].dimensions.forEach(function(d) {
@@ -237,7 +289,7 @@ describe('parcoords', function() {
     mock.data[0].line.color = mock.data[0].line.color.slice(lineStart, lineStart + lineCount);
   });
 
-  //afterEach(destroyGraphDiv);
+  afterEach(destroyGraphDiv);
 
   describe('edge cases', function() {
 
@@ -290,6 +342,23 @@ describe('parcoords', function() {
         expect(gd.data.length).toEqual(1);
         expect(gd.data[0].dimensions.length).toEqual(0);
         expect(document.querySelectorAll('.axis').length).toEqual(0);
+        done();
+      });
+    });
+
+    it('Works with duplicate dimension labels', function(done) {
+
+      var mockCopy = Lib.extendDeep({}, mock2);
+
+      mockCopy.layout.width = 320;
+      mockCopy.data[0].dimensions[1].label = mockCopy.data[0].dimensions[0].label;
+
+      var gd = createGraphDiv();
+      Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(function() {
+
+        expect(gd.data.length).toEqual(1);
+        expect(gd.data[0].dimensions.length).toEqual(2);
+        expect(document.querySelectorAll('.axis').length).toEqual(2);
         done();
       });
     });
@@ -507,122 +576,12 @@ describe('parcoords', function() {
         y: [0.05, 0.85]
       };
       gd = createGraphDiv();
+      mockCopy.layout.font = {size: 20/*color: 'green', style: 'italic'*/}
+      //mockCopy.data[0].labelfont = {color: 'cyan', size: 16}
       Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(done);
-
-      var newPlotLayout = {
-
-        "hovermode": 'closest',
-      };
-
-      function randomInitData(size) {
-        var out = new Array(size)
-        for (var i = 0; i < size; i++) {
-          out[i] = Math.random() * 10;
-        }
-        return out;
-      };
-      var xData = randomInitData(10000);
-      var yData = randomInitData(10000);
-      var zData = randomInitData(10000);
-      var color = randomInitData(10000);
-
-      var parCoordSetup = {
-        'layout': {width: 1600, height: 500},
-        'data': [{
-
-          "padding": 80,
-          "type": "parcoords",
-          "tickdistance": 50,
-          "line": {
-            "showscale": true,
-            "reversescale": true,
-            "colorbar": {
-              "title": "&nbsp;"
-            },
-            "colorscale": "Jet",
-            "color": color,
-            "cauto": true
-          },
-          "dimensions": [{
-            "id": "sample.dim.A",
-            "label": "sample.dim.A",
-            "values": xData
-          }, {
-            "id": "sample.dim.B",
-            "label": "sample.dim.B",
-            "values": yData
-          }, {
-            "id": "sample.resp.Bukin",
-            "label": "sample.resp.Bukin",
-            "values": zData
-          }]
-        }]
-      };
-
-      function addPoints(count) {
-        xData = xData.concat(randomInitData(count));
-        yData = yData.concat(randomInitData(count));
-        zData = zData.concat(randomInitData(count));
-        color = color.concat(randomInitData(count));
-      };
-
-      var intervalId = -1;
-      var noOfUpdates = 2;
-      var pointsToAdd = 0;
-
-      function autoUpdates() {
-        var count = 0;
-        intervalId = setInterval(function() {
-          if (count == noOfUpdates) {
-            clearInterval(intervalId);
-            Lib.notifier("Updates complete!!", 5000);
-            xData = [];
-            yData = [];
-            zData = [];
-            color = [];
-            return;
-          }
-          count++;
-          Lib.notifier("UpdateCount= " + count, 3000)
-          addPoints(pointsToAdd);
-          var restyleData = {
-            "line" : {
-              "showscale" : true,
-              "reversescale" : true,
-              "colorbar" : {
-                "title" : "&nbsp;"
-              },
-              "colorscale" : "Jet",
-              "color": color,
-              "cauto" : true
-            },
-            "dimensions" : [[{
-              "id" : "sample.dim.A",
-              "label" : "sample.dim.A",
-              "values" : xData
-            }, {
-              "id" : "sample.dim.B",
-              "label" : "sample.dim.B",
-              "values" : yData
-
-
-            }, {
-              "id" : "sample.resp.Bukin",
-              "label" : "sample.resp.Bukin",
-              "values" : zData
-            }]]
-          };
-          Plotly.restyle(gd, restyleData);
-        }, 1000);
-      };
-
-      Plotly.newPlot(gd, parCoordSetup).then(function() {
-        autoUpdates();
-
-      });
     });
 
-    it('`Plotly.plot` should have proper fields on `gd.data` on initial rendering', function() {
+    fit('`Plotly.plot` should have proper fields on `gd.data` on initial rendering', function() {
 
       expect(gd.data.length).toEqual(1);
       expect(gd.data[0].dimensions.length).toEqual(11);
@@ -715,8 +674,8 @@ describe('parcoords', function() {
         .then(done);
     });
 
-    fit('Calling `Plotly.restyle` with an object should amend the preexisting parcoords', function(done) {
-done; return;
+    it('Calling `Plotly.restyle` with an object should amend the preexisting parcoords', function(done) {
+
       var newStyle = Lib.extendDeep({}, mockCopy.data[0].line);
       newStyle.colorscale = 'Viridis';
       newStyle.reversescale = false;
@@ -906,6 +865,36 @@ done; return;
           expect(document.querySelectorAll('.parcoords-line-layers').length).toEqual(0);
           expect(document.querySelectorAll('.yAxis').length).toEqual(0);
           expect(gd.data.length).toEqual(0);
+          done();
+        });
+    });
+
+    it('Calling `Plotly.restyle` with zero panels left should erase lines', function(done) {
+
+      var mockCopy = Lib.extendDeep({}, mock2);
+      var gd = createGraphDiv();
+      Plotly.plot(gd, mockCopy.data, mockCopy.layout);
+
+      function restyleDimension(key, dimIndex, setterValue) {
+        var value = Lib.isArray(setterValue) ? setterValue[0] : setterValue;
+        return function() {
+          return Plotly.restyle(gd, 'dimensions[' + dimIndex + '].' + key, setterValue).then(function() {
+            expect(gd.data[0].dimensions[dimIndex][key]).toEqual(value, 'for dimension attribute \'' + key + '\'');
+          });
+        };
+      }
+
+      restyleDimension('values', 1, [[]])()
+        .then(function() {
+          d3.selectAll('.parcoords-lines').each(function(d) {
+            var imageArray = d.lineLayer.readPixels(0, 0, d.model.canvasWidth, d.model.canvasHeight);
+            var foundPixel = false;
+            var i = 0;
+            do {
+              foundPixel = foundPixel || imageArray[i++] !== 0;
+            } while(!foundPixel && i < imageArray.length);
+            expect(foundPixel).toEqual(false);
+          });
           done();
         });
     });
