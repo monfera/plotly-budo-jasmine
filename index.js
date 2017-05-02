@@ -31,16 +31,16 @@ var createGraphDiv = function createGraphDiv() {
 //var mouseEvent = require('plotly.js/test/jasmine/assets/mouse_event');
 
 // mock with one dimension (zero panels); special case, as no panel can be rendered
-var mock1 = require('plotly.js/test/image/mocks/sankey_1.json');
+//var mock1 = require('plotly.js/test/image/mocks/sankey_1.json');
 
 // mock with two dimensions (one panel); special case, e.g. left and right panel is obv. the same
-var mock2 = require('plotly.js/test/image/mocks/sankey_2.json');
+//var mock2 = require('plotly.js/test/image/mocks/sankey_2.json');
 
 // mock with zero dimensions; special case, as no dimension can be rendered
-var mock0 = Lib.extendDeep({}, mock1);
-mock0.data[0].dimensions = [];
+//var mock0 = Lib.extendDeep({}, mock1);
+//mock0.data[0].dimensions = [];
 
-var mock = require('plotly.js/test/image/mocks/sankey_large.json');
+//var mock = require('plotly.js/test/image/mocks/sankey_large.json');
 
 var lineStart = 30;
 var lineCount = 10;
@@ -49,19 +49,21 @@ var lineCount = 10;
 describe('sankey', function() {
 
 
+/*
   beforeAll(function() {
     mock.data[0].dimensions.forEach(function(d) {
       d.values = d.values.slice(lineStart, lineStart + lineCount);
     });
     mock.data[0].line.color = mock.data[0].line.color.slice(lineStart, lineStart + lineCount);
   });
+*/
 
   //afterEach(destroyGraphDiv);
 
 
   describe('sankey basic', function() {
 
-    var mock = require('plotly.js/test/image/mocks/sankey_new.json');
+    //var mock = require('plotly.js/test/image/mocks/sankey_new.json');
 
     //mock.data[0].nodepad = 7;
 
@@ -205,9 +207,9 @@ describe('sankey', function() {
 
       //mock = require('./drones.json')
 
-      var skip = mock.data[0].dimensions[0].values.map(function(d, i, a) {return i < a.length / 2 ? 1 : -1})
+      //var skip = mock.data[0].dimensions[0].values.map(function(d, i, a) {return i < a.length / 2 ? 1 : -1})
 
-      var newMock = makeMock(skip)
+      //var newMock = makeMock(skip)
       var newMock = require('plotly.js/test/image/mocks/energy.json');
 
 /*
