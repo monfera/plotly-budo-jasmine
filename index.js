@@ -78,7 +78,7 @@ var mock2 = require('plotly.js/test/image/mocks/gl2d_parcoords_2.json');
 var mock0 = Lib.extendDeep({}, mock1);
 mock0.data[0].dimensions = [];
 
-var mock = require('plotly.js/test/image/mocks/gl2d_parcoords_large.json');
+var mock = require('plotly.js/test/image/mocks/table_large.json');
 
 var lineStart = 30;
 var lineCount = 10;
@@ -286,7 +286,7 @@ describe('@noCI parcoords', function() {
     mock.data[0].dimensions.forEach(function(d) {
       d.values = d.values.slice(lineStart, lineStart + lineCount);
     });
-    mock.data[0].line.color = mock.data[0].line.color.slice(lineStart, lineStart + lineCount);
+//    mock.data[0].line.color = mock.data[0].line.color.slice(lineStart, lineStart + lineCount);
   });
 
   afterEach(destroyGraphDiv);
