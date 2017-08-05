@@ -3,15 +3,17 @@
 
 // Jasmine broilerplate - can be put in a separate file
 
-var jasmineReporters = require('jasmine-reporters');
-jasmine.getEnv().clearReporters();
-jasmine.getEnv().addReporter(new jasmineReporters.TapReporter());
+if(0) {
+  var jasmineReporters = require('jasmine-reporters');
+  jasmine.getEnv().clearReporters();
+  jasmine.getEnv().addReporter(new jasmineReporters.TapReporter());
+}
 
 var Plotly = require('plotly.js');
 var Lib = require('plotly.js/src/lib');
-var d3 = require('../plotly.js/node_modules/d3');
+var d3 = require('d3');
 var Plots = require('plotly.js/src/plots/plots');
-var Parcoords = require('plotly.js/src/traces/parcoords');
+//var Parcoords = require('plotly.js/src/traces/parcoords');
 var attributes = require('plotly.js/src/traces/parcoords/attributes');
 
 function createGraphDiv() {
@@ -67,6 +69,7 @@ function destroyGraphDiv() { return
 
   return el;
 };
+/*
 
 // mock with one dimension (zero panels); special case, as no panel can be rendered
 var mock1 = require('plotly.js/test/image/mocks/gl2d_parcoords_1.json');
@@ -77,12 +80,14 @@ var mock2 = require('plotly.js/test/image/mocks/gl2d_parcoords_2.json');
 // mock with zero dimensions; special case, as no dimension can be rendered
 var mock0 = Lib.extendDeep({}, mock1);
 mock0.data[0].dimensions = [];
+*/
 
-var mock = require('plotly.js/test/image/mocks/table_large.json');
+var mock = require('plotly.js/test/image/mocks/table.json');
 
 var lineStart = 30;
 var lineCount = 10;
 
+if(0)
 describe('parcoords initialization tests', function() {
 
   'use strict';
@@ -280,6 +285,7 @@ describe('parcoords initialization tests', function() {
   });
 });
 
+/*
 describe('@noCI parcoords', function() {
 
   beforeAll(function() {
@@ -570,15 +576,24 @@ describe('@noCI parcoords', function() {
         gd;
 
     beforeEach(function(done) {
+      */
       mockCopy = Lib.extendDeep({}, mock);
+/*
       mockCopy.data[0].domain = {
         x: [0.1, 0.9],
         y: [0.05, 0.85]
       };
+*/
       gd = createGraphDiv();
+      window.gd = gd
       mockCopy.layout.font = {size: 20/*color: 'green', style: 'italic'*/}
       //mockCopy.data[0].labelfont = {color: 'cyan', size: 16}
-      Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(done);
+      Plotly.plot(gd, mockCopy.data, mockCopy.layout)
+
+window.Plotly = Plotly
+
+/*  .then(done);
+
     });
 
     fit('`Plotly.plot` should have proper fields on `gd.data` on initial rendering', function() {
@@ -1011,3 +1026,4 @@ describe('@noCI parcoords', function() {
     });
   });
 });
+*/
