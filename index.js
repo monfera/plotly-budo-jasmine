@@ -575,14 +575,125 @@ describe('@noCI parcoords', function() {
         x: [0.1, 0.9],
         y: [0.05, 0.85]
       };
-      gd = createGraphDiv();
+      var gd1 = createGraphDiv();
+      var gd2 = createGraphDiv();
       mockCopy.layout.font = {size: 20/*color: 'green', style: 'italic'*/}
       //mockCopy.data[0].labelfont = {color: 'cyan', size: 16}
-      Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(done);
+
+      var img1 = document.createElement('img')
+      var img2 = document.createElement('img')
+      document.body.appendChild(img1)
+      document.body.appendChild(img2)
+      img1.style.position =       img2.style.position = 'fixed'
+      img1.style.top = img2.style.top = '500px';
+      img1.setAttribute('id', 'image')
+      img2.setAttribute('id', 'image2')
+
+      gd2.style.left = img2.style.left = '700px';
+
+
+
+
+
+
+
+      Plotly.newPlot(gd1, [{
+        "type": "parcoords",
+        "line": {
+          "showscale": true,
+          "reversescale": true,
+          "colorscale": "Jet",
+          "cmin": -4000,
+          "cmax": -100,
+          "color": [ -41, -1317, -164, -1856, -79, -931, -191, -2983, -341, -3846 ],
+          "cauto": false
+        },
+        "dimensions": [
+          {
+            "constraintrange": [ 200, 700 ],
+            "label": "Block height",
+            "values": [ 321, 534, 542, 674, 31, 674, 124, 246, 456, 743 ]
+          },
+          {
+            "constraintrange": [ 200, 700 ],
+            "label": "Block height 2",
+            "values": [ 321, 534, 542, 674, 31, 674, 124, 246, 456, 743 ]
+          }
+
+        ]
+      }
+      ])
+        .then(Plotly.toImage)
+        .then(function(imgData) {
+        var img = document.getElementById('image')
+        img.src = imgData
+    })
+
+      Plotly.newPlot(gd2, [{
+        "type": "parcoords",
+        "domain": {
+          "x": [0.2, 0.9],
+          "y": [0.2, 0.7]
+        },
+        "labelfont": {
+          "color": "red",
+          "size": 20
+        },
+        "tickfont": {
+          "color": "blue"
+        },
+        "rangefont": {
+          "color": "green"
+        },
+        "line": {
+          "showscale": true,
+          "reversescale": true,
+          "colorscale": "Jet",
+          "cmin": -4000,
+          "cmax": -100,
+          "color": [-41, -1317, -164, -1856, -79, -931, -191, -2983, -341, -3846],
+          "colorbar": {
+            "x": 1.1,
+            "y": 0.5
+          },
+          "cauto": false
+        },
+        "dimensions": [
+          {
+            "constraintrange": [ 200, 700 ],
+            "label": "Block height",
+            "values": [ 321, 534, 542, 674, 31, 674, 124, 246, 456, 743 ]
+          },
+          {
+            "label": "Block width",
+            "range": [ 0, 700000 ],
+            "values": [ 268630, 489543, 379086, 600000, 489543, 268630, 600000, 379086, 268630, 489543 ]
+          }
+        ]
+      }
+      ])
+        .then(Plotly.toImage)
+        .then(function(imgData) {
+        var img = document.getElementById('image2')
+        img.src = imgData
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+      //Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(done);
     });
 
     fit('`Plotly.plot` should have proper fields on `gd.data` on initial rendering', function() {
-
+return
       expect(gd.data.length).toEqual(1);
       expect(gd.data[0].dimensions.length).toEqual(11);
       expect(document.querySelectorAll('.axis').length).toEqual(10); // one dimension is `visible: false`
