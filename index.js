@@ -80,8 +80,8 @@ mock0.data[0].dimensions = [];
 
 var mock = require('plotly.js/test/image/mocks/gl2d_parcoords_large.json');
 
-var lineStart = 30;
-var lineCount = 10;
+var lineStart = 0;
+var lineCount = Infinity;
 
 describe('parcoords initialization tests', function() {
 
@@ -576,7 +576,7 @@ describe('@noCI parcoords', function() {
         y: [0.05, 0.85]
       };
       gd = createGraphDiv();
-      mockCopy.layout.font = {size: 20/*color: 'green', style: 'italic'*/}
+      mockCopy.layout.font = {size: 10/*color: 'green', style: 'italic'*/}
       //mockCopy.data[0].labelfont = {color: 'cyan', size: 16}
       Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(done);
     });
