@@ -82,9 +82,11 @@ var mock0 = Lib.extendDeep({}, mock1);
 mock0.data[0].dimensions = [];
 */
 
-var mock = require('plotly.js/test/image/mocks/table.json');
-var mock = require('plotly.js/test/image/mocks/table_one_column.json');
-var mock = require('plotly.js/test/image/mocks/table_one_cell.json');
+//var mock = require('plotly.js/test/image/mocks/table.json');
+//var mock = require('plotly.js/test/image/mocks/table_one_column.json');
+//var mock = require('plotly.js/test/image/mocks/table_one_cell_styled.json');
+//var mock = require('plotly.js/test/image/mocks/table_one_cell_latex.json');
+var mock = require('plotly.js/test/image/mocks/table_one_cell_plain.json');
 
 var lineStart = 30;
 var lineCount = 10;
