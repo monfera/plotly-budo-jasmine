@@ -82,11 +82,16 @@ var mock0 = Lib.extendDeep({}, mock1);
 mock0.data[0].dimensions = [];
 */
 
+//var mock = require('plotly.js/test/image/mocks/table_one_cell_plain.json');
+//var mock = require('plotly.js/test/image/mocks/table_one_cell_styled.json');
+//var mock = require('plotly.js/test/image/mocks/table_one_cell_linebroken.json');
+//var mock = require('plotly.js/test/image/mocks/table_latex_multitrace_scatter.json');
+//var mock = require('plotly.js/test/image/mocks/table_one_cell_textwrap.json');
 //var mock = require('plotly.js/test/image/mocks/table.json');
 //var mock = require('plotly.js/test/image/mocks/table_one_column.json');
-//var mock = require('plotly.js/test/image/mocks/table_one_cell_styled.json');
-//var mock = require('plotly.js/test/image/mocks/table_one_cell_latex.json');
-var mock = require('plotly.js/test/image/mocks/table_one_cell_plain.json');
+//var mock = require('plotly.js/test/image/mocks/table_multicolumn_mixed_content.json');
+//var mock = require('plotly.js/test/image/mocks/table_plain_birds.json');
+var mock = require('plotly.js/test/image/mocks/table_wrapped_birds.json');
 
 var lineStart = 30;
 var lineCount = 10;
@@ -590,7 +595,7 @@ describe('@noCI parcoords', function() {
 */
       gd = createGraphDiv();
       window.gd = gd
-      mockCopy.layout.font = {size: 20/*color: 'green', style: 'italic'*/}
+      //mockCopy.layout.font = {size: 20/*color: 'green', style: 'italic'*/}
       //mockCopy.data[0].labelfont = {color: 'cyan', size: 16}
       Plotly.plot(gd, mockCopy.data, mockCopy.layout)
 
