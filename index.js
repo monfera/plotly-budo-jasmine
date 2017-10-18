@@ -85,13 +85,15 @@ mock0.data[0].dimensions = [];
 //var mock = require('plotly.js/test/image/mocks/table_one_cell_plain.json');
 //var mock = require('plotly.js/test/image/mocks/table_one_cell_styled.json');
 //var mock = require('plotly.js/test/image/mocks/table_one_cell_linebroken.json');
+//var mock = require('plotly.js/test/image/mocks/table_latex_multitrace.json');
 //var mock = require('plotly.js/test/image/mocks/table_latex_multitrace_scatter.json');
 //var mock = require('plotly.js/test/image/mocks/table_one_cell_textwrap.json');
 //var mock = require('plotly.js/test/image/mocks/table.json');
 //var mock = require('plotly.js/test/image/mocks/table_one_column.json');
 //var mock = require('plotly.js/test/image/mocks/table_multicolumn_mixed_content.json');
 //var mock = require('plotly.js/test/image/mocks/table_plain_birds.json');
-var mock = require('plotly.js/test/image/mocks/table_wrapped_birds.json');
+var mock = require('plotly.js/test/image/mocks/geo_multiple-usa-choropleths.json');
+//var mock = require('plotly.js/test/image/mocks/mapbox_bubbles-text.json');
 
 var lineStart = 30;
 var lineCount = 10;
