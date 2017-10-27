@@ -612,8 +612,8 @@ var mock =     {
           "type": "aggregate"
         }
       ],
-      "y": [1, 2, 3, 4, 5, 6],
-      "x": ["setosa", "setosa", "versicolor", "versicolor",  "virginica", "virginica"],
+      "y": [1, 2, 3, 4],
+      "x": ["setosa", "setosa", "versicolor", "versicolor"],
       "type": "bar"
     };
 
