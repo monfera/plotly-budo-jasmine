@@ -91,7 +91,7 @@ mock0.data[0].dimensions = [];
 //var mock = require('plotly.js/test/image/mocks/table_one_column.json');
 //var mock = require('plotly.js/test/image/mocks/table_multicolumn_mixed_content.json');
 //var mock = require('plotly.js/test/image/mocks/table_plain_birds.json');
-var mock = require('plotly.js/test/image/mocks/table_wrapped_birds.json');
+//var mock = require('plotly.js/test/image/mocks/table_wrapped_birds.json');
 
 var lineStart = 30;
 var lineCount = 10;
@@ -586,7 +586,7 @@ describe('@noCI parcoords', function() {
 
     beforeEach(function(done) {
       */
-      mockCopy = Lib.extendDeep({}, mock);
+      //mockCopy = Lib.extendDeep({}, mock);
 /*
       mockCopy.data[0].domain = {
         x: [0.1, 0.9],
@@ -597,7 +597,80 @@ describe('@noCI parcoords', function() {
       window.gd = gd
       //mockCopy.layout.font = {size: 20/*color: 'green', style: 'italic'*/}
       //mockCopy.data[0].labelfont = {color: 'cyan', size: 16}
-      Plotly.plot(gd, mockCopy.data, mockCopy.layout)
+
+
+var mock = {
+  "data": [
+    {
+      "autobinx": true,
+      "uid": "7f5487",
+      "ysrc": "monferapro2:21:E77PVM0JBAWQ6QRPHT857EZ2HR03D6BX",
+      "xsrc": "monferapro2:21:Z63P8C4REXI968DQIK6UHD5ADQH9TT4I",
+      "name": "sepal_length",
+      "transforms": [
+        {
+          "aggregateId": "b562d9",
+          "enabled": true,
+          "aggregations": [
+            {
+              "enabled": true,
+              "target": "y",
+              "func": "avg"
+            }
+          ],
+          "groups": [
+            "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "versicolor",
+            "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "virginica",
+            "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica"
+          ],
+          "groupssrc": "monferapro2:21:Z63P8C4REXI968DQIK6UHD5ADQH9TT4I",
+          "type": "aggregate"
+        }
+      ],
+      "y": [5.1, 4.9, 4.7, 4.6, 5, 5.4, 4.6, 5, 4.4, 4.9, 5.4, 4.8, 4.8, 4.3, 5.8, 5.7, 5.4, 5.1, 5.7, 5.1, 5.4, 5.1, 4.6, 5.1, 4.8, 5, 5, 5.2, 5.2, 4.7, 4.8, 5.4, 5.2, 5.5, 4.9, 5, 5.5, 4.9, 4.4, 5.1, 5, 4.5, 4.4, 5, 5.1, 4.8, 5.1, 4.6, 5.3, 5, 7, 6.4, 6.9, 5.5, 6.5, 5.7, 6.3, 4.9, 6.6, 5.2, 5, 5.9, 6, 6.1, 5.6, 6.7, 5.6, 5.8, 6.2, 5.6, 5.9, 6.1, 6.3, 6.1, 6.4, 6.6, 6.8, 6.7, 6, 5.7, 5.5, 5.5, 5.8, 6, 5.4, 6, 6.7, 6.3, 5.6, 5.5, 5.5, 6.1, 5.8, 5, 5.6, 5.7, 5.7, 6.2, 5.1, 5.7, 6.3, 5.8, 7.1, 6.3, 6.5, 7.6, 4.9, 7.3, 6.7, 7.2, 6.5, 6.4, 6.8, 5.7, 5.8, 6.4, 6.5, 7.7, 7.7, 6, 6.9, 5.6, 7.7, 6.3, 6.7, 7.2, 6.2, 6.1, 6.4, 7.2, 7.4, 7.9, 6.4, 6.3, 6.1, 7.7, 6.3, 6.4, 6, 6.9, 6.7, 6.9, 5.8, 6.8, 6.7, 6.7, 6.3, 6.5, 6.2, 5.9],
+      "x": ["setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica"],
+      "autobiny": true,
+      "type": "bar",
+      "mode": "markers"
+    }
+  ],
+  "layout": {
+    "hovermode": "closest",
+    "breakpoints": [],
+    "xaxis": {
+      "range": [
+        -0.5,
+        2.5
+      ],
+      "type": "category",
+      "autorange": true,
+      "title": "species"
+    },
+    "yaxis": {
+      "range": [
+        0,
+        6.934736842105261
+      ],
+      "type": "linear",
+      "autorange": true,
+      "title": "sepal_length"
+    },
+    "width": 983,
+    "height": 697.93
+  },
+  "frames": [],
+  "config": {
+    "displaylogo": false,
+    "autosizable": true,
+    "fillFrame": false,
+    "sendData": false,
+    "showLink": false,
+    "scrollZoom": true,
+    "mapboxAccessToken": "pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2lxMnVvdm5iMDA4dnhsbTQ5aHJzcGs0MyJ9.X9o_rzNLNesDxdra4neC_A"
+  }
+};
+Plotly.plot(gd, mock.data, mock.layout);
+
 
 window.Plotly = Plotly
 
