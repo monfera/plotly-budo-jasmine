@@ -565,12 +565,13 @@ describe('@noCI parcoords', function() {
 
   });
 
-  describe('basic use', function() {
+  fdescribe('basic use', function() {
     var mockCopy,
         gd;
 
     beforeEach(function(done) {
       mockCopy = Lib.extendDeep({}, mock);
+      mockCopy.data[0].line.showscale = false;
       mockCopy.data[0].domain = {
         x: [0.1, 0.9],
         y: [0.05, 0.85]
@@ -578,11 +579,25 @@ describe('@noCI parcoords', function() {
       gd = createGraphDiv();
       mockCopy.layout.font = {size: 10/*color: 'green', style: 'italic'*/}
       //mockCopy.data[0].labelfont = {color: 'cyan', size: 16}
-      Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(done);
+      Plotly.plot(gd, mockCopy.data, mockCopy.layout)
+        .then(function() {
+          if(0)Plotly.animate('graph',
+            {data: [{'line.color': 'red'}],
+              traces: [0],
+              layout: {}})
+          if(1)Plotly.animate('graph',
+            {data: [{'dimensions[0].constraintrange': [32000, 40000]}],
+              traces: [0],
+              layout: {}})
+          if(0)Plotly.restyle('graph',
+            {'dimensions[0].constraintrange': [[32000, 40000]]}, 0)
+        })
+        .then(done);
     });
 
     fit('`Plotly.plot` should have proper fields on `gd.data` on initial rendering', function() {
 
+return
       expect(gd.data.length).toEqual(1);
       expect(gd.data[0].dimensions.length).toEqual(11);
       expect(document.querySelectorAll('.axis').length).toEqual(10); // one dimension is `visible: false`
