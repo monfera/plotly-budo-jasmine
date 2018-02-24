@@ -107,10 +107,19 @@ describe('@noCI parcoords', function() {
       gd = createGraphDiv();
       mockCopy.layout.font = {size: 10/*color: 'green', style: 'italic'*/}
       //mockCopy.data[0].labelfont = {color: 'cyan', size: 16}
-      Plotly.plot(gd, mockCopy.data, mockCopy.layout).then(function() {
-        Plotly.restyle(gd, 'dimensions[2].constraintrange', [[0.9, 2.2]])
-        //Plotly.restyle(gd, 'dimensions[0].constraintrange', [[131000, 138000]])
-      }).then(done);
+      //mockCopy.data[0].dimensions[3].constraintrange = [0.9, 2.2];
+      mockCopy.data.forEach(function(d) {
+        d.dimensions.forEach(function(dd) {
+          if(dd.constraintrange) {
+            dd.constraintrange = [dd.constraintrange];
+          }
+        })
+      })
+      mockCopy.data[0].dimensions[0].constraintrange = [[75000, 100000], [150000, 175000]]
+      Plotly.plot(gd, mockCopy.data, mockCopy.layout)
+        //.then(function() {Plotly.restyle(gd, 'dimensions[1].constraintrange', [[[100000, 200000], [400000, 500000]]])})
+        .then(function() {Plotly.restyle(gd, 'dimensions[3].constraintrange', [[[0.9, 2.2]]])})
+        .then(done);
     });
 
     fit('`Plotly.plot` should have proper fields on `gd.data` on initial rendering', function() {
